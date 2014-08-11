@@ -1,6 +1,6 @@
-includeTargets << new File ("${gwtPluginDir}/scripts/_GwtInternal.groovy")
+includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
-target (default: "Runs the Super Dev Mode server.") {
+target(default: "Runs the Super Dev Mode server.") {
     depends(parseArguments)
 
     if (argsMap["params"]) {

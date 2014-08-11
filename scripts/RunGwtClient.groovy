@@ -1,6 +1,6 @@
-includeTargets << new File ("${gwtPluginDir}/scripts/_GwtInternal.groovy")
+includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
-target (default: "Runs the GWT hosted mode client.") {
+target(default: "Runs the GWT hosted mode client.") {
     depends(parseArguments)
 
     if (argsMap["params"]) {

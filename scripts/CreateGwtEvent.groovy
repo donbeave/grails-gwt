@@ -13,7 +13,7 @@ where
     EVENTNAME = The name of the event, without the "Event" suffix.
 """
 
-target (default: "Creates a new GWT application event with associated handler.") {
+target(default: "Creates a new GWT application event with associated handler.") {
     depends(parseArguments)
     promptForName(type: "")
 
@@ -24,25 +24,22 @@ target (default: "Creates a new GWT application event with associated handler.")
         println()
         println "USAGE:${USAGE}"
         exit(1)
-    }
-    else if (!params[0]) {
+    } else if (!params[0]) {
         println "An event name must be given."
         exit(1)
     }
-    
+
     // If we only have one argument, we must split it into package and
     // name parts. Otherwise, we just use the provided arguments as is.
     def modulePackage, eventName
     def subPackage = ""
     if (params.size() == 1) {
         (modulePackage, eventName) = packageAndName(params[0])
-    }
-    else {
+    } else {
         modulePackage = params[0]
         if (params.size() == 2) {
             eventName = params[1]
-        }
-        else {
+        } else {
             subPackage = '.' + params[1]
             eventName = params[2]
         }

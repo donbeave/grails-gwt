@@ -1,5 +1,4 @@
 import groovy.text.SimpleTemplateEngine
-import groovy.util.XmlSlurper
 import org.apache.commons.io.FileUtils
 
 includeTargets << grailsScript("_GrailsEvents")
@@ -29,8 +28,7 @@ target(default: "Generates the plugin documentation and makes it available on yo
     if (m) {
         branch = m[0][1]
         println "Current branch: ${branch}"
-    }
-    else {
+    } else {
         logError("Unable to find out current branch. Output from 'git branch' was:\n\n  ${output}".toString())
         exit(1)
     }
@@ -50,8 +48,7 @@ target(default: "Generates the plugin documentation and makes it available on yo
     // contains the project name.
     if (m) {
         remoteUrl = "http://github.com/${m[0][1]}/${m[0][2]}/".toString()
-    }
-    else {
+    } else {
         println "[WARN] Not a recognised GitHub URL: ${remoteUrl}"
     }
 
@@ -77,7 +74,7 @@ target(default: "Generates the plugin documentation and makes it available on yo
     docsDir.renameTo(tmpDocsDir)
 
     executeGit("checkout gh-pages")
-    
+
     FileUtils.copyDirectory(tmpDocsDir, docsDir)
     ant.delete(dir: tmpDocsDir.absolutePath)
 
@@ -95,10 +92,10 @@ target(default: "Generates the plugin documentation and makes it available on yo
     def xml = new XmlSlurper().parse(pluginXml)
     def engine = new SimpleTemplateEngine()
     def tmpl = engine.createTemplate(new File("${basedir}/main.html.tmpl")).make([
-            version: xml.@version.text(),
+            version      : xml.@version.text(),
             grailsVersion: xml.@grailsVersion.text(),
-            author: xml.author.text(),
-            remoteUrl: remoteUrl ])
+            author       : xml.author.text(),
+            remoteUrl    : remoteUrl])
 
     // Overwrite any existing template with the new version.
     def layoutsDir = new File("${basedir}/_layouts")
@@ -116,7 +113,7 @@ target(default: "Generates the plugin documentation and makes it available on yo
 
     if (argsMap["push"]) {
         executeGit("push")
-    
+
         // Now we can return to the original branch.
         executeGit("checkout ${branch}")
     }

@@ -1,3 +1,3 @@
 // Remove the directory for storing GWT files.
-ant.delete(dir: "${basedir}/web-app/gwt")
+ant.delete(dir: "${basedir}/assets/javascript/gwt")
 

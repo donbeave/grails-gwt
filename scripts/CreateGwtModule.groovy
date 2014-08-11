@@ -10,7 +10,7 @@ where
     NAME = The name of the module.
 """
 
-target (default: "Creates a new GWT module.") {
+target(default: "Creates a new GWT module.") {
     depends(parseArguments)
     promptForName(type: "")
 
@@ -21,15 +21,14 @@ target (default: "Creates a new GWT module.") {
         println()
         println "USAGE:${USAGE}"
         exit(1)
-    }
-    else if (!params[0]) {
+    } else if (!params[0]) {
         println "A module name must be given."
         exit(1)
     }
-    
+
     // We must split the argument into package and name parts.
     def (modulePackage, moduleName) = packageAndName(params[0])
-    
+
     // We require a package for the module.
     if (!modulePackage) {
         println "Please provide a package for the module."

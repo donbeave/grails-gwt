@@ -26,25 +26,25 @@ target(default: "Generates the GWT RPC client interfaces for specified services 
 
             if (!forceCreate) {
                 ant.input(message: "GWT interfaces exist already for service ${serviceWrapper.shortName}." +
-                            " Would you like to overwrite them ( y = yes, n = no, a = all, q = quit )?",
+                        " Would you like to overwrite them ( y = yes, n = no, a = all, q = quit )?",
                         addproperty: "gwt.generate.confirm",
                         validargs: "y,n,a,q")
 
-                switch(ant.project.getProperty("gwt.generate.confirm")) {
-                case "a":
-                    forceCreate = true
-                    break
+                switch (ant.project.getProperty("gwt.generate.confirm")) {
+                    case "a":
+                        forceCreate = true
+                        break
 
-                case "y":
-                    break
+                    case "y":
+                        break
 
-                case "q":
-                    skipAll = true
-                    return
+                    case "q":
+                        skipAll = true
+                        return
 
-                case "n":
-                    println "Skipping service $serviceWrapper.shortName"
-                    return
+                    case "n":
+                        println "Skipping service $serviceWrapper.shortName"
+                        return
                 }
             }
         }

@@ -18,7 +18,7 @@ packageAndName = { String fullClassName ->
         name = fullClassName.substring(pos + 1)
     }
 
-    return [ pkg, name ]
+    return [pkg, name]
 }
 
 /**
@@ -40,8 +40,8 @@ installFile = { File targetFile, File templateFile, Map tokens ->
         // It does, so find out whether the user wants to overwrite
         // the existing copy.
         ant.input(
-            addProperty: "${targetFile.name}.overwrite",
-            message: "GWT: ${targetFile.name} already exists. Overwrite? [y/n]")
+                addProperty: "${targetFile.name}.overwrite",
+                message: "GWT: ${targetFile.name} already exists. Overwrite? [y/n]")
 
         if (ant.antProject.properties."${targetFile.name}.overwrite" == "n") {
             // User doesn't want to overwrite, so stop the script.
@@ -59,7 +59,7 @@ installFile = { File targetFile, File templateFile, Map tokens ->
     }
 
     // The file was created.
-    event("CreatedFile", [ targetFile ])
+    event("CreatedFile", [targetFile])
 }
 
 /**
@@ -71,5 +71,5 @@ installGwtTemplate = { String pkg, String name, String templateName, String srcD
     def targetFile = new File("${basedir}/${srcDir}${packageToPath(pkg)}", templateName.replace("Gwt", name))
     def templateFile = new File("${gwtPluginDir}/src/templates/artifacts", templateName)
 
-    installFile(targetFile, templateFile, [ "artifact.package": pkg, "artifact.name": name ])
+    installFile(targetFile, templateFile, ["artifact.package": pkg, "artifact.name": name])
 }

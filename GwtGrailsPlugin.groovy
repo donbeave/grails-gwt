@@ -19,19 +19,17 @@ import org.codehaus.groovy.grails.plugins.gwt.DefaultGwtServiceInterfaceGenerato
 import org.codehaus.groovy.grails.web.plugins.support.WebMetaUtils
 
 class GwtGrailsPlugin {
-    def version = "1.0.1"
-    def grailsVersion = "2.0 > *"
+    def version = "1.1.0"
+    def grailsVersion = "2.2 > *"
     def title = "The Google Web Toolkit for Grails."
     def description = """\
 Incorporates GWT into Grails. In particular, GWT host pages can be
 GSPs and standard Grails services can be used to handle client RPC
 requests.
 """
-    def issueManagement = [ system: "Github", url: "https://github.com/simplicityitself/grails-gwt/issues" ]
+    def issueManagement = [system: "Github", url: "https://github.com/simplicityitself/grails-gwt/issues"]
     def documentation = "http://simplicityitself.github.com/grails-gwt/guide/"
-    def scm = [url:"https://github.com/simplicityitself/grails-gwt"]
-
-    def dependsOn = [extendedDependencyManager: "0.5.5 > *"]
+    def scm = [url: "https://github.com/simplicityitself/grails-gwt"]
 
     def license = "APACHE"
 
@@ -39,9 +37,9 @@ requests.
             "web-app/**"
     ]
 
-    def observe = [ "services" ]
+    def observe = ["services"]
     def watchedResources = "file:./grails-app/actionHandlers/**/*ActionHandler.groovy"
-    def artefacts = [ ActionHandlerArtefactHandler ]
+    def artefacts = [ActionHandlerArtefactHandler]
 
     def srcDir = "src/gwt"
 
@@ -57,7 +55,7 @@ requests.
 
         // Bean for generating RPC interfaces for services.
         gwtInterfaceGenerator(DefaultGwtServiceInterfaceGenerator)
-    }   
+    }
 
     /**
      * Registers the common web-related dynamic properties on services
@@ -88,7 +86,7 @@ requests.
                     'filter-class'('org.codehaus.groovy.grails.plugins.gwt.GwtCacheControlFilter')
                 }
             }
-        
+
             // Place the Shiro filter after the Spring character encoding filter, otherwise the latter filter won't work.
             def filter = xml.'filter-mapping'.find { it.'filter-name'.text() == "charEncodingFilter" }
             filter + {
@@ -112,24 +110,23 @@ requests.
             if (interfaceGenerator.isGwtExposed(serviceWrapper.clazz)) {
                 WebMetaUtils.registerCommonWebProperties(serviceWrapper.clazz.metaClass, application)
             }
-        }
-        else if (application.isActionHandlerClass(event.source)) {
+        } else if (application.isActionHandlerClass(event.source)) {
             // Update the artifact. Without this step, the reloading
             // won't work.
             def grailsClass = application.addArtefact(ActionHandlerArtefactHandler.TYPE, event.source)
 
             // Re-register the action handler bean.
-            def beans = beans {                 
+            def beans = beans {
                 final c = configureActionHandler.clone()
                 c.delegate = delegate
                 c.call(grailsClass)
             }
 
-            if (event.ctx) {         
+            if (event.ctx) {
                 beans.registerBeans(event.ctx)
-            }				
+            }
         }
-    }                                                                                  
+    }
 
     def onApplicationChange = { event ->
     }
@@ -145,7 +142,7 @@ requests.
             bean.autowire = "byName"
         }
     }
-    
+
     /**
      * Searches a given directory for any GWT module files, and
      * returns a list of their fully-qualified names.

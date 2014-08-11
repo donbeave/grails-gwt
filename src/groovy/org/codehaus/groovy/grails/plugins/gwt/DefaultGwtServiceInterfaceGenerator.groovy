@@ -1,25 +1,34 @@
+/*
+ * Copyright 2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.codehaus.groovy.grails.plugins.gwt
 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import org.codehaus.groovy.grails.plugins.gwt.annotation.CollectionTypeArg
+import org.codehaus.groovy.grails.plugins.gwt.annotation.MapTypeArg
+
 import java.beans.Introspector
+import java.beans.PropertyDescriptor
 import java.lang.annotation.Annotation
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.codehaus.groovy.grails.plugins.gwt.GwtServiceInterfaceGenerator
-import org.codehaus.groovy.grails.plugins.gwt.annotation.CollectionTypeArg
-import org.codehaus.groovy.grails.plugins.gwt.annotation.MapTypeArg
-import java.beans.PropertyDescriptor
-import java.beans.MethodDescriptor
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import org.codehaus.groovy.grails.commons.GrailsClass
 
 /**
- * Created by IntelliJ IDEA.
- * User: pal20
- * Date: 02-Apr-2009
- * Time: 09:00:14
- * To change this template use File | Settings | File Templates.
+ * @author pal20
  */
 class DefaultGwtServiceInterfaceGenerator implements GwtServiceInterfaceGenerator {
     String srcPath = "src/java";
@@ -112,12 +121,10 @@ class DefaultGwtServiceInterfaceGenerator implements GwtServiceInterfaceGenerato
             def m = gwtExposed =~ 'gwt:(.*)'
             if (m) {
                 return m[0][1]
-            }
-            else {
+            } else {
                 return getDefaultPackage(serviceClass)
             }
-        }
-        else {
+        } else {
             return null
         }
     }
@@ -145,7 +152,7 @@ public interface ${className}Async {"""
         // we want to leave them out of the interface definition.
         def info = Introspector.getBeanInfo(serviceClass)
         def propMethods = [] as Set
-        info.propertyDescriptors.each {PropertyDescriptor desc ->
+        info.propertyDescriptors.each { PropertyDescriptor desc ->
             propMethods << desc.readMethod
             propMethods << desc.writeMethod
 
@@ -162,7 +169,7 @@ public interface ${className}Async {"""
 
         // Iterate through the methods declared by the Grails service,
         // adding the appropriate ones to the interface definitions.
-        serviceClass.declaredMethods.each {Method method ->
+        serviceClass.declaredMethods.each { Method method ->
             // Skip non-public, static, Groovy, and property methods.
             if (method.synthetic ||
                     !Modifier.isPublic(method.modifiers) ||
@@ -248,8 +255,7 @@ public interface ${className}Async {"""
             // If the type is not an array, we can simply return its
             // name.
             return clazz.name
-        }
-        else {
+        } else {
             // The class name contains some number of '[' characters
             // indicating the dimensions of the array.
             def dimensions = clazz.name.count('[')
@@ -284,7 +290,7 @@ public interface ${className}Async {"""
         for (int i in 0..<paramAnns.size()) {
             if (paramAnns[i].size() > 0) {
                 // Look for a TypeArg annotation on this parameter.
-                paramAnns[i].each {Annotation ann ->
+                paramAnns[i].each { Annotation ann ->
                     if (CollectionTypeArg.isInstance(ann) || MapTypeArg.isInstance(ann)) {
                         checkTypeArg(paramTypes[i], ann)
 
@@ -329,15 +335,13 @@ public interface ${className}Async {"""
                         "TypeArg error: annotation is not of type CollectionTypeArg, " +
                                 "but the corresponding type is a Collection.")
             }
-        }
-        else if (Map.isAssignableFrom(type)) {
+        } else if (Map.isAssignableFrom(type)) {
             if (!MapTypeArg.isInstance(ann)) {
                 throw new RuntimeException(
                         "TypeArg error: annotation is not of type MapTypeArg, " +
                                 "but the corresponding type is a Map.")
             }
-        }
-        else {
+        } else {
             throw new RuntimeException(
                     "TypeArg error: annotation present, but the corresponding type " +
                             "is neither a Collection nor a Map.")

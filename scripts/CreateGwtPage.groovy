@@ -3,7 +3,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 includeTargets << grailsScript("_GrailsArgParsing")
 includeTargets << grailsScript("_GrailsCreateArtifacts")
 
-target (default: "Creates a new GSP page for hosting a GWT UI.") {
+target(default: "Creates a new GSP page for hosting a GWT UI.") {
     depends(parseArguments)
 
     // This script takes multiple arguments (in fact, at least two),
@@ -34,8 +34,8 @@ target (default: "Creates a new GSP page for hosting a GWT UI.") {
             // Controller doesn't exist - does the user want to create
             // it?
             ant.input(
-                addProperty:"${controllerName}.auto.create",
-                message:"${controllerName} does not exist - do you want to create it now? [y/n]")
+                    addProperty: "${controllerName}.auto.create",
+                    message: "${controllerName} does not exist - do you want to create it now? [y/n]")
 
             if (ant.antProject.properties."${controllerName}.auto.create" == "y") {
                 // User wants to create the controller, so do so.
@@ -47,8 +47,7 @@ target (default: "Creates a new GSP page for hosting a GWT UI.") {
 
         // The target file is written into the 'views' directory.
         targetFile = "grails-app/views/${argArray[0]}"
-    }
-    else {
+    } else {
         // Create the file in 'web-app'.
         targetFile = "web-app/${argArray[0]}"
     }
@@ -61,5 +60,5 @@ target (default: "Creates a new GSP page for hosting a GWT UI.") {
         replacefilter(token: '@module.name@', value: argArray[1])
     }
 
-    event("CreatedFile", [ targetFile ])
+    event("CreatedFile", [targetFile])
 }

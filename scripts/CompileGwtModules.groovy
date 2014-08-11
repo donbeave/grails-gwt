@@ -6,12 +6,11 @@ USAGE = """
 
 where
     --draft  = Compiler uses draft mode, resulting in less optimised
-               Javscript (GWT 2.0+ only)
+               JavaScript
 """
 
-target (default: "Compiles the GWT modules to Javscript.") {
-    depends(parseArguments, checkGwtHome)
-
+target(default: "Compiles the GWT modules to Javscript.") {
+    depends(parseArguments)
     // Force compilation of the GWT modules.
     gwtForceCompile = true
 
@@ -28,10 +27,7 @@ target (default: "Compiles the GWT modules to Javscript.") {
     // 'compileGwtModules' depends on it and the module compilation
     // is triggered by the end of the standard Grails compilation
     // (at the moment).
-    if (usingGwt16) {
-        compileGwtModules()
-    }
-    else {
-        compile()
-    }
+    compile()
+
+    compileGwtModules()
 }

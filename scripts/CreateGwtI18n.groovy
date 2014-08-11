@@ -15,22 +15,20 @@ where
 /**
  * grails create-gwt-i18n MODULE
  */
-target (default: "Creates a new i18n properties file for a GWT module.") {
+target(default: "Creates a new i18n properties file for a GWT module.") {
     depends(parseArguments)
     promptForName(type: "")
 
-    def i18nSuffixes = [ "Constants", "Messages" ]
+    def i18nSuffixes = ["Constants", "Messages"]
     if (argsMap["constants-only"] && argsMap["messages-only"]) {
         println "You can only specify one of 'constants-only' and 'messages-only' - they are mutually exclusive."
         return 1
-    }
-    else if (argsMap["constants-only"]) {
+    } else if (argsMap["constants-only"]) {
         i18nSuffixes.remove("Messages")
-    }
-    else if (argsMap["messages-only"]) {
+    } else if (argsMap["messages-only"]) {
         i18nSuffixes.remove("Constants")
     }
-    
+
     // There must be one and only one argument in 'params'.
     def params = argsMap["params"]
     if (!params || params.size() > 1) {
@@ -38,12 +36,11 @@ target (default: "Creates a new i18n properties file for a GWT module.") {
         println()
         println "USAGE:${USAGE}"
         exit(1)
-    }
-    else if (!params[0]) {
+    } else if (!params[0]) {
         println "A module name must be given."
         exit(1)
     }
-    
+
     // If we only have one argument, we must split it into package and
     // name parts. Otherwise, we just use the provided arguments as is.
     def (modulePackage, moduleName) = packageAndName(params[0])

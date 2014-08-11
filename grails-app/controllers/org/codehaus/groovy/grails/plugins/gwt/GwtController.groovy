@@ -1,15 +1,30 @@
+/*
+ * Copyright 2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.codehaus.groovy.grails.plugins.gwt
 
 import com.google.gwt.user.client.rpc.SerializationException
 import com.google.gwt.user.server.rpc.RPC
 import com.google.gwt.user.server.rpc.RPCRequest
 import com.google.gwt.user.server.rpc.RemoteServiceServlet
-
-import java.lang.reflect.UndeclaredThrowableException
-import javax.servlet.ServletContext
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsClassUtils as GCU
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
+
+import javax.servlet.ServletContext
+import java.lang.reflect.UndeclaredThrowableException
 
 /**
  * Custom controller that dispatches GWT client requests to the appropriate
@@ -74,8 +89,8 @@ class GwtController extends RemoteServiceServlet {
             }
 
             // Invoke the method on the service and encode the response.
-			def serviceMethodName = serviceMethod.name
-			def retval = service."$serviceMethodName"(* rpcRequest.parameters)
+            def serviceMethodName = serviceMethod.name
+            def retval = service."$serviceMethodName"(*rpcRequest.parameters)
             return RPC.encodeResponseForSuccess(serviceMethod, retval, rpcRequest.serializationPolicy)
 
         }
@@ -105,6 +120,8 @@ class GwtController extends RemoteServiceServlet {
      * to call all the getter methods on controllers. No idea why.
      */
     Enumeration getInitParameterNames() {}
+
     String getServletInfo() {}
+
     String getServletName() {}
 }

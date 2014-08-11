@@ -15,7 +15,6 @@
  */
 package org.codehaus.groovy.grails.plugins.gwt
 
-
 import java.lang.reflect.Modifier
 
 import junit.framework.TestSuite
@@ -23,8 +22,6 @@ import junit.framework.TestSuite
 import org.codehaus.groovy.grails.test.GrailsTestTypeResult
 import org.codehaus.groovy.grails.test.event.GrailsTestEventPublisher
 import org.codehaus.groovy.grails.test.support.GrailsTestTypeSupport
-
-
 
 /**
  * An {@code GrailsTestType} for GWT unit tests.

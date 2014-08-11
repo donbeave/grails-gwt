@@ -1,5 +1,3 @@
-
-
 //
 // This script is executed by Grails after plugin was installed to project.
 // This script is a Gant script so you can use all special variables provided
@@ -8,7 +6,7 @@
 //
 
 // Create the directory for storing GWT files.
-ant.mkdir(dir: "${basedir}/web-app/gwt")
+ant.mkdir(dir: "${basedir}/assets/javascript/gwt")
 
 // add gwt-user.jar and the others to compile dependencies 
 // otherwise it is not possible to compile plugin classes
@@ -22,10 +20,9 @@ ant.mkdir(dir: "${basedir}/web-app/gwt")
 // that requires code compilation
 // this could be avoided by doing 'grails refresh-dependencies' first
 try {
-  includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
-  updateClasspath()
+    includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 } catch (Throwable e) {
-  // show the error message and the stacktrace
-  println 'error by installing gwt plugin: '+e.message
-  e.printStackTrace()
+    // show the error message and the stacktrace
+    println 'error by installing gwt plugin: ' + e.message
+    e.printStackTrace()
 }

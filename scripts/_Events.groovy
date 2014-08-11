@@ -1,26 +1,18 @@
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
-eventCompileStart = {
-  println "COMPILE START"
-  checkGwtHome()
-  updateClasspath()
-}
-
 eventSetClasspath = { ClassLoader rootLoader ->
-  updateClasspath(rootLoader)
-}
-
-// Called when the compilation phase completes.
-eventCompileEnd = {
-    // Compile the GWT modules. This target is provided by '_GwtInternal'.
-    checkGwtHome()
-    if (!usingGwt16) {
-        compileGwtModules()
+    try {
+        checkGwtHome()
+    } catch (e) {
     }
 }
 
+eventCompileStart = {
+    checkGwtHome()
+}
+
 // Clean up the GWT-generated files on "clean".
-eventCleanEnd = {    
+eventCleanEnd = {
     gwtClean()
 }
 
@@ -45,33 +37,14 @@ eventConfigureWarNameEnd = {
 // in the system.
 //
 eventCreateWarStart = { warName, stagingDir ->
-    if (gwtHome) {
-      // Extract the UnableToCompleteException file from gwt-dev-*.jar
-      ant.unjar(dest: "${stagingDir}/WEB-INF/classes") {
-          patternset(includes: "com/google/gwt/core/ext/UnableToCompleteException.class")
-          fileset(dir: "${gwtHome}", includes: "gwt-dev-*.jar")
-      }
-    } else if (gwtResolvedDependencies) {
-      def gwtDevJar = gwtResolvedDependencies.find { it.name.contains("gwt-dev")}
-      // Extract the UnableToCompleteException file from gwt-dev-*.jar
-      ant.unjar(dest: "${stagingDir}/WEB-INF/classes") {
-          patternset(includes: "com/google/gwt/core/ext/UnableToCompleteException.class")
-          path(location: gwtDevJar.absolutePath)
-      }
+    if (gwtResolvedDependencies) {
+        def gwtDevJar = gwtResolvedDependencies.find { it.name.contains("gwt-dev") }
+        // Extract the UnableToCompleteException file from gwt-dev-*.jar
+        ant.unjar(dest: "${stagingDir}/WEB-INF/classes") {
+            patternset(includes: "com/google/gwt/core/ext/UnableToCompleteException.class")
+            path(location: gwtDevJar.absolutePath)
+        }
     }
-
-}
-
-//
-// Adds the GWT servlet library to the root loader.
-//
-eventPackageAppEnd = {
-  if (getBinding().variables.containsKey("gwtHome")) {
-    def gwtServlet = new File(gwtHome, "gwt-servlet.jar")
-    if (gwtServlet.exists()) {
-      rootLoader.addURL(gwtServlet.toURI().toURL())
-    }
-  }
 }
 
 eventGwtRunHostedStart = {
@@ -83,30 +56,24 @@ eventGwtCompileStart = {
 }
 
 void compileGwtClasses(forceCompile = false) {
-    if (!gwtClassesCompiled && (usingGoogleGin || forceCompile)) {
+    if (!gwtClassesCompiled && forceCompile) {
         // Hack to work around an issue in Google Gin:
         //
         //    http://code.google.com/p/google-gin/issues/detail?id=36
         //
         ant.mkdir(dir: gwtClassesDir)
-        gwtJavac( destDir: gwtClassesDir, includes: "**/*.java") {
+        gwtJavac(destDir: gwtClassesDir, includes: "**/*.java") {
             src(path: 'src/gwt')//current project gwt modules
             //include any sources from any included plugins
-            buildConfig?.gwt?.plugins?.each {pluginName ->
-              def pluginDir = binding.variables["${pluginName}PluginDir"]
-              if (pluginDir && new File("${pluginDir}/src/gwt").exists()) {
-                src(path: "${pluginDir}/src/gwt")
-              }
+            buildConfig?.gwt?.plugins?.each { pluginName ->
+                def pluginDir = binding.variables["${pluginName}PluginDir"]
+                if (pluginDir && new File("${pluginDir}/src/gwt").exists()) {
+                    src(path: "${pluginDir}/src/gwt")
+                }
             }
             ant.classpath {
-                
                 gwtResolvedDependencies.each { File f ->
                     pathElement(location: f.absolutePath)
-                }
-                
-                fileset(dir: gwtHome) {
-                    include(name: "gwt-dev*.jar")
-                    include(name: "gwt-user.jar")
                 }
 
                 if (gwtLibFile.exists()) {
@@ -120,15 +87,14 @@ void compileGwtClasses(forceCompile = false) {
                         grailsSettings.providedDependencies.each { dep ->
                             pathElement(location: dep.absolutePath)
                         }
-                    }
-                    else {
+                    } else {
                         ant.echo message: "WARN: You have set gwt.use.provided.deps, " +
-                                          "but are using a pre-1.2 version of Grails. The setting " +
-                                          "will be ignored."
+                                "but are using a pre-1.2 version of Grails. The setting " +
+                                "will be ignored."
                     }
                 }
                 pathElement(location: grailsSettings.classesDir.path)
-                
+
                 // Fix to get this working with Grails 1.3+. We have to
                 // add the directory where plugin classes are compiled
                 // to. Pre-1.3, plugin classes were compiled to the same
@@ -145,13 +111,13 @@ void compileGwtClasses(forceCompile = false) {
 loadGwtTestTypeClass = { ->
     def doLoad = { -> classLoader.loadClass('org.codehaus.groovy.grails.plugins.gwt.GwtJUnitGrailsTestType') }
     try {
-      doLoad()
+        doLoad()
     } catch (ClassNotFoundException e) {
-      includeTargets << grailsScript("_GrailsCompile")
-      compile()
-      doLoad()
+        includeTargets << grailsScript("_GrailsCompile")
+        compile()
+        doLoad()
     }
-  }
+}
 
 registerGwtTestTypes = {
     // register gwt test types in unit test phase
@@ -170,7 +136,7 @@ eventTestCompileStart = { types ->
     // both gwt and normal unit test can refer GWT classes, hence - they must be compiled before compiling test classes
     compileGwtClasses(true)
     (gwtDependencies + gwtClassesDir).each { classLoader.addURL(it.toURI().toURL()) }
-    
+
     // if we use specific JDK for compiling GWT classes, then we need to compile test/gwt classes as well
     // before Grails attempts that
     if (types.class == loadGwtTestTypeClass() && gwtJavacCmd) {
@@ -180,14 +146,13 @@ eventTestCompileStart = { types ->
             src(path: new File("${testSourceDir}", types.relativeSourcePath))
         }
     }
-     
 }
 
 eventPackagePluginsEnd = {
     // invoked after installing plugin and compiling its classes
     // and from other places in the build process. However, adjusting
     // classpaths and registering gwt test types should happen only once
-    
+
     // if GWT dependencies are not discovered, do it now
     if (!gwtDependencies) {
         eventSetClasspath(classLoader)
