@@ -674,7 +674,6 @@ def addModuleToDependencies(ModuleRevisionId mrid, type) {
 def addMavenModuleToDependencies(group, name, version, scope = BuildSettings.PROVIDED_SCOPE) {
     //Create a dependency with the supplied information
     Dependency dependency = new Dependency(group, name, version)
-    dependency.exclude(Dependency.WILDCARD) // exclude all sub dependencies
     dependency.exported = false
     //Add the dependency as "provided"
     grailsSettings.dependencyManager.addDependency(dependency, scope)
