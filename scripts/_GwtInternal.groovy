@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import grails.util.BuildSettings
 import grails.util.GrailsNameUtils
 import org.apache.ivy.core.module.descriptor.Artifact
@@ -22,7 +23,6 @@ import org.apache.ivy.core.report.ResolveReport
 import org.apache.ivy.core.resolve.DownloadOptions
 import org.apache.ivy.core.resolve.ResolveOptions
 import org.codehaus.groovy.grails.resolve.Dependency
-import org.codehaus.groovy.grails.resolve.DependencyReport
 import org.codehaus.groovy.grails.resolve.IvyDependencyManager
 
 // This script may be run more than once, because the _Events script
@@ -610,7 +610,7 @@ def addGwtCoreToDependencies(String version) {
     }
 
     addDependency('javax.validation', 'validation-api', '1.0.0.GA')
-    addDependency('javax.validation', "validation-api", '1.0.0.GA', 'sources')
+    addDependency('javax.validation', 'validation-api', '1.0.0.GA', 'sources')
 }
 
 def addGinToDependencies(String version) {
@@ -677,7 +677,7 @@ def addMavenModuleToDependencies(group, name, version, scope = BuildSettings.PRO
     dependency.exported = false
     //Add the dependency as "provided"
     grailsSettings.dependencyManager.addDependency(dependency, scope)
-    DependencyReport dependencyReport = grailsSettings.dependencyManager.resolve(scope)
+    def dependencyReport = grailsSettings.dependencyManager.resolve(scope)
     if (dependencyReport.hasError()) {
         println "GWT Dependency resolution has errors (${dependencyReport.getResolveError().getMessage()}), exiting"
         exit(1)
