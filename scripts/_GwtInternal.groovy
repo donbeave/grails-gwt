@@ -180,9 +180,10 @@ addGwtDependencies = {
     if (getPropertyValue('gwt.version', null)) {
         addGwtCoreToDependencies(getPropertyValue('gwt.version', null))
     }
-    if (buildConfig.gwt.gin.version) {
+    if (buildConfig.gwt.gin.version)
         addGinToDependencies(buildConfig.gwt.gin.version)
-    }
+    if (buildConfig.gwt.gwtp.version)
+        addGwtpToDependencies(buildConfig.gwt.gwtp.version)
     if (buildConfig.gwt.dependencies) {
         buildConfig.gwt.dependencies.each { depDefinition ->
             def m = depDefinition =~ /([a-zA-Z0-9\-\/\._+=]*?):([a-zA-Z0-9\-\/\._+=]+?):([a-zA-Z0-9\-\/\._+=]+)/
@@ -326,7 +327,15 @@ def addGinToDependencies(String version) {
     }
 }
 
-def addDependency(String group, String name, String version, String wildcard) {
+def addGwtpToDependencies(String version) {
+    println "Adding GWTP ${version} to GWT environment"
+
+    addDependency('com.gwtplatform', 'gwtp-mvp-client', version)
+    addDependency('com.gwtplatform', 'gwtp-mvp-shared', version)
+    addDependency('com.gwtplatform', 'gwtp-clients-common', version)
+}
+
+def addDependency(String group, String name, String version, String wildcard = null) {
     //Create a dependency with the supplied information
     final dependency = new Dependency(group, name, version)
     dependency.exported = false
