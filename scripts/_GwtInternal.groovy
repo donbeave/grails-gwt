@@ -233,7 +233,7 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
             // Include a GWT-specific lib directory if it exists.
             if (gwtLibFile.exists()) {
                 fileset(dir: gwtLibPath) {
-                    include(name: "*.jar")
+                    include(name: '*.jar')
                 }
             }
 
@@ -250,7 +250,7 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
             // add the directory where plugin classes are compiled
             // to. Pre-1.3, plugin classes were compiled to the same
             // directory as the application classes.
-            if (grailsSettings.metaClass.hasProperty(grailsSettings, "pluginClassesDir")) {
+            if (grailsSettings.metaClass.hasProperty(grailsSettings, 'pluginClassesDir')) {
                 pathElement(location: grailsSettings.pluginClassesDir.path)
             }
 
@@ -289,12 +289,16 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
 def addGwtCoreToDependencies(String version) {
     println "Adding GWT ${version}"
 
-    addDependency('javax.validation', 'validation-api', '1.0.0.GA')
-    addDependency('javax.validation', 'validation-api', '1.0.0.GA', 'sources')
-
     addDependency('com.google.gwt', 'gwt-dev', version)
     addDependency('com.google.gwt', 'gwt-user', version)
     addDependency('com.google.gwt', 'gwt-servlet', version)
+
+    if (buildConfig.gwt.requestfactory != false) {
+        addDependency('com.google.web.bindery', 'requestfactory', version)
+        addDependency('com.google.web.bindery', 'requestfactory-apt', version)
+    } else {
+        println 'RequestFactory is disabled.'
+    }
 
     // GWT version >= 2.5.0
     def versionComponents = parseVersion(version)
@@ -322,25 +326,14 @@ def addGinToDependencies(String version) {
     }
 }
 
-def addDependency(String group, String name, String version, type = 'jar') {
-    if (name.equals('gwt-user')) {
-        def loader = grailsSettings.dependencyManager.getClass().classLoader
+def addDependency(String group, String name, String version, String wildcard) {
+    //Create a dependency with the supplied information
+    final dependency = new Dependency(group, name, version)
+    dependency.exported = false
+    if (wildcard)
+        dependency.exclude(wildcard)
 
-        def Dependency = loader.loadClass('org.eclipse.aether.graph.Dependency')
-        def DefaultArtifact = loader.loadClass('org.eclipse.aether.artifact.DefaultArtifact')
-
-        final dependency = Dependency.newInstance(DefaultArtifact.newInstance(
-                group, name, type, version), BuildSettings.PROVIDED_SCOPE)
-
-        grailsSettings.dependencyManager.addDependency(dependency)
-    } else {
-        //Create a dependency with the supplied information
-        final dependency = new Dependency(group, name, version)
-        dependency.exported = false
-        dependency.exclude(Dependency.WILDCARD)
-
-        addMavenDependency(dependency)
-    }
+    addMavenDependency(dependency)
 }
 
 def addMavenDependency(dependency) {
