@@ -69,7 +69,7 @@ gwtTargetDir = new File("${basedir}/target/gwt")
 gwtClassesDir = new File(grailsSettings.projectWorkDir, "gwtclasses")
 gwtJavacCmd = getPropertyValue("gwt.javac.cmd", null)
 gwtJavaCmd = getPropertyValue("gwt.java.cmd", null)
-gwtOutputPath = getPropertyValue("gwt.output.path", "${basedir}/assets/javascripts/gwt")
+gwtOutputPath = getPropertyValue("gwt.output.path", "${basedir}/web-app/gwt")
 gwtOutputStyle = getPropertyValue("gwt.output.style", "OBF")
 gwtDisableCompile = getPropertyValue("gwt.compile.disable", "false").toBoolean()
 gwtHostedModeOutput = getPropertyValue("gwt.hosted.output.path", "tomcat/classes") // Default is where gwt shell runs its embedded tomcat
@@ -673,9 +673,11 @@ def addModuleToDependencies(ModuleRevisionId mrid, type) {
 
 def addMavenModuleToDependencies(group, name, version, scope = BuildSettings.PROVIDED_SCOPE) {
     //Create a dependency with the supplied information
-    Dependency dependency2 = new Dependency(group, name, version)
+    Dependency dependency = new Dependency(group, name, version)
+    dependency.exclude(Dependency.WILDCARD) // exclude all sub dependencies
+    dependency.exported = false
     //Add the dependency as "provided"
-    grailsSettings.dependencyManager.addDependency(dependency2, scope)
+    grailsSettings.dependencyManager.addDependency(dependency, scope)
     DependencyReport dependencyReport = grailsSettings.dependencyManager.resolve(scope)
     if (dependencyReport.hasError()) {
         println "GWT Dependency resolution has errors (${dependencyReport.getResolveError().getMessage()}), exiting"

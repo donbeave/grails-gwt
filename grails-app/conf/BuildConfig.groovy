@@ -8,6 +8,7 @@ grails.project.dependency.resolution = {
         mavenCentral()
     }
     dependencies {
+        build 'com.google.gwt:gwt-user:2.5.0'
         test('org.spockframework:spock-grails-support:0.7-groovy-2.0') {
             export = false
         }
@@ -23,5 +24,3 @@ grails.project.dependency.resolution = {
 }
 
 grails.release.scm.enabled = false
-
-gwt { version = '2.6.1' }

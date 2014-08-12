@@ -15,7 +15,7 @@
  */
 
 // Create the directory for storing GWT files.
-ant.mkdir(dir: "${basedir}/assets/javascript/gwt")
+ant.mkdir(dir: "${basedir}/web-app/gwt")
 
 // add gwt-user.jar and the others to compile dependencies 
 // otherwise it is not possible to compile plugin classes
