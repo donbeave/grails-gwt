@@ -49,6 +49,8 @@ gwtOutputStyle = getPropertyValue('gwt.output.style', 'OBF')
 gwtDisableCompile = getPropertyValue('gwt.compile.disable', 'false').toBoolean()
 gwtLibPath = "$basedir/lib/gwt"
 gwtLibFile = new File(gwtLibPath)
+gwtPluginLibPath = "$gwtPluginDir/lib/gwt"
+gwtPluginLibFile = new File(gwtPluginLibPath)
 
 grailsSrcPath = 'src/java'
 
@@ -247,6 +249,11 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
             // Include a GWT-specific lib directory if it exists.
             if (gwtLibFile.exists()) {
                 fileset(dir: gwtLibPath) {
+                    include(name: '*.jar')
+                }
+            }
+            if (gwtPluginLibFile.exists()) {
+                fileset(dir: gwtPluginLibPath) {
                     include(name: '*.jar')
                 }
             }

@@ -44,6 +44,11 @@ void compileGwtClasses() {
                     include(name: "*.jar")
                 }
             }
+            if (gwtPluginLibFile.exists()) {
+                fileset(dir: gwtPluginLibPath) {
+                    include(name: '*.jar')
+                }
+            }
 
             pathElement(location: grailsSettings.classesDir.path)
 
