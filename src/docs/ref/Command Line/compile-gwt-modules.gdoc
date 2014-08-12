@@ -1,8 +1,0 @@
-h1. compiole-gwt-modules
-
-This command will compile the GWT modules in src/gwt to javascript and place them in webapp/gwt.
-
-If you want to only compile a subset, pass the name(s) of the modules as parameters.
-
-compile-gwt-modules some.module.Module some.other.Module
-

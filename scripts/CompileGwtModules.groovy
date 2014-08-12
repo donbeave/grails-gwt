@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 the original author or authors.
+ * Copyright 2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
-includeTargets << grailsScript("_GrailsCompile")
+includeTargets << grailsScript('_GrailsCompile')
 
 USAGE = """
     compile-gwt-modules [--draft]
@@ -24,19 +24,17 @@ where
                JavaScript
 """
 
-target(default: "Compiles the GWT modules to Javscript.") {
+target(default: 'Compiles the GWT modules to JavaScript.') {
     depends(parseArguments)
-    // Force compilation of the GWT modules.
-    gwtForceCompile = true
 
     // If arguments are provided, treat them as a list of modules to
     // compile.
-    gwtModuleList = argsMap["params"]
+    gwtModuleList = argsMap['params']
 
     // Handle draft compilation mode. We assign a default value of
     // 'null' so that we know whether we can override with the
     // gwt.draft.compile setting.
-    gwtDraftCompile = argsMap["draft"] ?: null
+    gwtDraftCompile = argsMap['draft'] ?: null
 
     // Compile the GWT modules. We use the 'compile' target because
     // 'compileGwtModules' depends on it and the module compilation

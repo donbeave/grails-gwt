@@ -9,6 +9,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         build 'com.google.gwt:gwt-user:2.5.0'
+        build 'com.google.gwt:gwt-servlet:2.5.0'
         test('org.spockframework:spock-grails-support:0.7-groovy-2.0') {
             export = false
         }
