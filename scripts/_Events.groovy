@@ -16,5 +16,4 @@
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
 eventSetClasspath = { ClassLoader rootLoader ->
-    println 'CLASS PATH'
 }

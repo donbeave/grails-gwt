@@ -333,6 +333,7 @@ def addGwtpToDependencies(String version) {
     addDependency('com.gwtplatform', 'gwtp-mvp-client', version)
     addDependency('com.gwtplatform', 'gwtp-mvp-shared', version)
     addDependency('com.gwtplatform', 'gwtp-clients-common', version)
+    addDependency('commons-lang', 'commons-lang', '2.6')
 }
 
 def addDependency(String group, String name, String version, String wildcard = null) {
