@@ -39,9 +39,11 @@ if (!(getBinding().variables.containsKey('gwtModuleList'))) {
 ant.property(environment: 'env')
 
 gwtResolvedDependencies = []
+gwtDependencies = []
 gwtSrcPath = 'src/gwt'
 gwtClassesDir = new File(grailsSettings.projectWorkDir, 'gwtclasses')
 gwtJavaCmd = getPropertyValue('gwt.java.cmd', null)
+gwtJavacCmd = getPropertyValue('gwt.javac.cmd', null)
 gwtOutputPath = getPropertyValue('gwt.output.path', "${basedir}/web-app/gwt")
 gwtOutputStyle = getPropertyValue('gwt.output.style', 'OBF')
 gwtDisableCompile = getPropertyValue('gwt.compile.disable', 'false').toBoolean()
@@ -221,6 +223,17 @@ gwtJava = { Map options, Closure body ->
     return localAnt.project.properties
 }
 
+gwtJavac = { Map options, Closure body ->
+    if (gwtJavacCmd) {
+        ant.echo message: "Using ${gwtJavacCmd} for compiling GWT classes"
+        options['fork'] = true
+        options['executable'] = gwtJavacCmd
+        // set target to java version of JDK used by Grails
+        options['target'] = ant.project.properties['ant.java.version']
+    }
+    ant.javac(options, body)
+}
+
 gwtRunWithProps = { String className, Map properties, Closure body ->
     properties.classname = className
     return gwtJava(properties) { ant ->
@@ -294,13 +307,6 @@ def addGwtCoreToDependencies(String version) {
     addDependency('com.google.gwt', 'gwt-user', version)
     addDependency('com.google.gwt', 'gwt-servlet', version)
 
-    if (buildConfig.gwt.requestfactory != false) {
-        addDependency('com.google.web.bindery', 'requestfactory', version)
-        addDependency('com.google.web.bindery', 'requestfactory-apt', version)
-    } else {
-        println 'RequestFactory is disabled.'
-    }
-
     // GWT version >= 2.5.0
     def versionComponents = parseVersion(version)
     if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 5)) {
@@ -334,6 +340,7 @@ def addGwtpToDependencies(String version) {
     addDependency('com.gwtplatform', 'gwtp-mvp-shared', version)
     addDependency('com.gwtplatform', 'gwtp-clients-common', version)
     addDependency('commons-lang', 'commons-lang', '2.6')
+    addDependency('org.apache.velocity', 'velocity', '1.7')
 }
 
 def addDependency(String group, String name, String version, String wildcard = null) {
@@ -344,6 +351,7 @@ def addDependency(String group, String name, String version, String wildcard = n
         dependency.exclude(wildcard)
 
     addMavenDependency(dependency)
+    gwtDependencies << dependency
 }
 
 def addMavenDependency(dependency) {
@@ -351,16 +359,28 @@ def addMavenDependency(dependency) {
 }
 
 def resolveMavenDependencies() {
-    def report = grailsSettings.dependencyManager.resolve(BuildSettings.PROVIDED_SCOPE)
+    def artifacts = grailsSettings.dependencyManager.resolve(BuildSettings.PROVIDED_SCOPE).resolvedArtifacts
+    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.COMPILE_SCOPE).resolvedArtifacts)
+    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.RUNTIME_SCOPE).resolvedArtifacts)
+    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.BUILD_SCOPE).resolvedArtifacts)
+    artifacts = artifacts.unique()
 
-    report.getJarFiles().each { dependencyJar ->
-        // add artifacts to the list of Grails provided dependencies
-        // this enables SpringSource STS to build Eclipse's classpath properly
-        grailsSettings.providedDependencies << dependencyJar
+    gwtDependencies.each { dependency ->
+        def dependencyJar = artifacts.find {
+            it.dependency.group.equals(dependency.group) && it.dependency.name.equals(dependency.name)
+        }?.file
 
-        if (!gwtResolvedDependencies.contains(dependencyJar))
-            gwtResolvedDependencies << dependencyJar
+        if (dependencyJar) {
+            // add artifacts to the list of Grails provided dependencies
+            // this enables SpringSource STS to build Eclipse's classpath properly
+            grailsSettings.providedDependencies << dependencyJar
+
+            if (!gwtResolvedDependencies.contains(dependencyJar))
+                gwtResolvedDependencies << dependencyJar
+        }
     }
+
+    println gwtResolvedDependencies
 }
 
 def maybeUseGwtLibDir() {
@@ -377,17 +397,14 @@ def maybeUseGwtLibDir() {
     }
 }
 
-def addDependenciesToClasspath() {
-    if (gwtLibFile.exists() || gwtResolvedDependencies) {
-        ant.classpath {
-            if (gwtLibFile.exists()) {
-                fileset(dir: gwtLibPath) {
-                    include(name: '*.jar')
-                }
-            }
+addDependenciesToClasspath = {
+    gwtResolvedDependencies.each { File f ->
+        if (!f.name.contains('gwt-dev')) {
+            //println "Adding ${f.name} to classpath"
+            rootLoader.addURL(f.toURL())
 
-            gwtResolvedDependencies.each { dep ->
-                pathElement(location: dep.absolutePath)
+            if (classLoader) {
+                classLoader.addURL(f.toURL())
             }
         }
     }
