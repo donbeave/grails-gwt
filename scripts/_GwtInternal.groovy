@@ -379,8 +379,6 @@ def resolveMavenDependencies() {
                 gwtResolvedDependencies << dependencyJar
         }
     }
-
-    println gwtResolvedDependencies
 }
 
 def maybeUseGwtLibDir() {
