@@ -31,7 +31,6 @@ target(default: 'Runs the GWT hosted mode client.') {
         }
     }
 
-    addDependenciesToClasspath()
     compile()
 
     // Start the hosted mode client.

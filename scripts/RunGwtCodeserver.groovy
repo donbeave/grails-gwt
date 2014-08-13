@@ -34,7 +34,6 @@ target(default: 'Runs the Super Dev Mode server.') {
         }
     }
 
-    addDependenciesToClasspath()
     compile()
 
     // Start the Super Dev Mode

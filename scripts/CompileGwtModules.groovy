@@ -36,8 +36,6 @@ target(default: 'Compiles the GWT modules to JavaScript.') {
     // gwt.draft.compile setting.
     gwtDraftCompile = argsMap['draft'] ?: null
 
-    addDependenciesToClasspath()
-
     // Compile the GWT modules. We use the 'compile' target because
     // 'compileGwtModules' depends on it and the module compilation
     // is triggered by the end of the standard Grails compilation

@@ -22,3 +22,27 @@ eventGwtCompileStart = {
 eventGwtRunHostedStart = {
     compileGwtClasses()
 }
+
+eventCompileStart = {
+    addDependenciesToClasspath()
+}
+
+//
+// The GWT libs must be copied to the WAR file. In addition, although
+// we don't do dynamic compilation in production mode, the plugin
+// groovy class gets compiled with the UnableToCompleteException in
+// the class file. Thus, we also have to include this particular file
+// in the system.
+//
+eventCreateWarStart = { warName, stagingDir ->
+    if (gwtResolvedDependencies) {
+        def gwtDevJar = gwtResolvedDependencies.find { it.name.contains('gwt-dev') }
+
+        // Extract the UnableToCompleteException file from gwt-dev-*.jar
+        ant.unjar(dest: "${stagingDir}/WEB-INF/classes") {
+            patternset(includes: 'com/google/gwt/core/ext/UnableToCompleteException.class')
+            path(location: gwtDevJar.absolutePath)
+        }
+    }
+
+}
