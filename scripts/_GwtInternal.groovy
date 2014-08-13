@@ -289,6 +289,8 @@ addGwtDependencies = {
         addGinToDependencies(buildConfig.gwt.gin.version)
     if (buildConfig.gwt.gwtp.version)
         addGwtpToDependencies(buildConfig.gwt.gwtp.version)
+    if (buildConfig.gwt.guava.version)
+        addGuavaToDependencies(buildConfig.gwt.guava.version)
     if (buildConfig.gwt.dependencies) {
         buildConfig.gwt.dependencies.each { depDefinition ->
             def m = depDefinition =~ /([a-zA-Z0-9\-\/\._+=]*?):([a-zA-Z0-9\-\/\._+=]+?):([a-zA-Z0-9\-\/\._+=]+)/
@@ -511,6 +513,15 @@ def addGwtpToDependencies(String version) {
     addDependency('com.gwtplatform', 'gwtp-clients-common', version)
     addDependency('commons-lang', 'commons-lang', '2.6')
     addDependency('org.apache.velocity', 'velocity', '1.7')
+}
+
+def addGuavaToDependencies(String version) {
+    println "Adding Guava ${version} to GWT environment"
+
+    addDependency('com.google.code.findbugs', 'jsr305', '3.0.0')
+    addDependency('com.google.guava', 'guava', version)
+    addDependency('com.google.guava', 'guava-gwt', version)
+    addDependency('com.google.guava', 'guava-annotations', 'r03')
 }
 
 def addDependency(String group, String name, String version, String wildcard = null) {
