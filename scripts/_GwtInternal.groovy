@@ -51,10 +51,12 @@ gwtLibPath = "$basedir/lib/gwt"
 gwtLibFile = new File(gwtLibPath)
 gwtPluginLibPath = "$gwtPluginDir/lib/gwt"
 gwtPluginLibFile = new File(gwtPluginLibPath)
+gwtDebugMode = getPropertyValue('gwt.debug', 'false').toBoolean()
 
 grailsSrcPath = 'src/java'
 
 compilerClass = 'com.google.gwt.dev.Compiler'
+runClass = 'com.google.gwt.dev.DevMode'
 
 //
 // A target for compiling any GWT modules defined in the project.
@@ -89,10 +91,8 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     // This triggers the Events scripts in the application and plugins.
     event('GwtCompileStart', ['Starting to compile the GWT modules.'])
 
-    // Compile any GWT modules. This requires the GWT 'dev' JAR file,
-    // so the user must have defined the GWT_HOME environment variable
-    // so that we can locate that JAR.
     def modules = gwtModuleList ?: GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
+
     event('StatusUpdate', ['Compiling GWT modules'])
     gwtModulesCompiled = true
 
@@ -103,7 +103,7 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     compiler.gwtOutputStyle = gwtOutputStyle
     compiler.gwtOutputPath = gwtOutputPath
 //    compiler.compileReport = compileReport
-    compiler.gwtModuleList = gwtModuleList
+    compiler.gwtModuleList = modules
     compiler.grailsSettings = grailsSettings
     compiler.compilerClass = compilerClass
     compiler.gwtRun = gwtRunWithProps
@@ -178,6 +178,65 @@ target(compileI18n: 'Compiles any i18n properties files for any GWT modules in \
     event('GwtCompileI18nEnd', ['Finished compiling the i18n properties files.'])
 }
 
+gwtClientServer = "${serverHost ?: 'localhost'}:${serverPort}"
+
+target(runGwtClient: 'Runs the GWT hosted mode client.') {
+    event('StatusUpdate', ['Starting the GWT hosted mode client.'])
+
+    if (System.properties.'os.name' == 'Mac OS X') {
+        def javaVersion = System.properties.'java.version'
+
+        if (javaVersion.startsWith('1.8'))
+            gwtJavacCmd = 'javac'
+    }
+
+    event('GwtRunHostedStart', ['Starting the GWT hosted mode client.'])
+
+    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+
+    def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
+
+    event('StatusUpdate', ["Found ${modules.size()} modules"])
+
+    // GWT dev mode process does not need parent Gant process for anything.
+    // Hence it is a good idea to spawn in, making parent script to continue and eventually exit
+    // freeing allocated memory that could be significant (up to 512MB in the default Grails installation)
+    gwtRunWithProps(runClass, [spawn: true, fork: true]) {
+        // Hosted mode requires run with 32-bit parameter on Mac OS X (only need for Apple's compiled JVM).
+        if (antProject.properties.'os.name' == 'Mac OS X') {
+            def osVersion = antProject.properties.'os.version'.split(/\./)
+            def javaVersion = antProject.properties.'java.version'
+            if (osVersion[0].toInteger() == 10 && osVersion[1].toInteger() >= 6 && javaVersion.startsWith('1.6')) {
+                jvmarg(value: '-d32')
+            }
+        }
+
+        // Enable remote debugging if required.
+        if (argsMap['debug']) {
+            def debugPort = !(argsMap['debug'] instanceof Boolean) ? argsMap['debug'].toInteger() : 5006
+            jvmarg(value: '-Xdebug')
+            jvmarg(value: '-Xnoagent')
+            jvmarg(value: "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${debugPort}")
+        }
+
+        if (argsMap['bindAddress']) {
+            arg(value: '-bindAddress')
+            arg(value: argsMap['bindAddress'])
+        }
+
+        arg(value: '-noserver')
+        sysproperty(key: 'gwt.persistentunitcachedir', value: "${basedir}/target/gwt/unitCache")
+
+        arg(value: '-war')
+        arg(value: gwtOutputPath)
+
+        arg(value: '-startupUrl')
+        arg(value: "http://${gwtClientServer}/${grailsAppName}")
+
+        arg(line: modules.join(' '))
+    }
+}
+
 addGwtDependencies = {
     println 'Adding GWT dependencies ...'
 
@@ -213,12 +272,58 @@ resolveGwtDependencies = {
     resolveMavenDependencies()
 }
 
+compileGwtClasses = {
+    // Hack to work around an issue in Google Gin:
+    //
+    //    http://code.google.com/p/google-gin/issues/detail?id=36
+    //
+    ant.mkdir(dir: gwtClassesDir)
+    gwtJavac(destDir: gwtClassesDir, includes: "**/*.java") {
+        src(path: 'src/gwt') //current project gwt modules
+        //include any sources from any included plugins
+        buildConfig?.gwt?.plugins?.each { pluginName ->
+            def pluginDir = binding.variables["${pluginName}PluginDir"]
+            if (pluginDir && new File("${pluginDir}/src/gwt").exists()) {
+                src(path: "${pluginDir}/src/gwt")
+            }
+        }
+        ant.classpath {
+            gwtResolvedDependencies.each { File f ->
+                pathElement(location: f.absolutePath)
+            }
+
+            if (gwtLibFile.exists()) {
+                fileset(dir: gwtLibPath) {
+                    include(name: "*.jar")
+                }
+            }
+            if (gwtPluginLibFile.exists()) {
+                fileset(dir: gwtPluginLibPath) {
+                    include(name: '*.jar')
+                }
+            }
+
+            pathElement(location: grailsSettings.classesDir.path)
+
+            // Fix to get this working with Grails 1.3+. We have to
+            // add the directory where plugin classes are compiled
+            // to. Pre-1.3, plugin classes were compiled to the same
+            // directory as the application classes.
+            if (grailsSettings.metaClass.hasProperty(grailsSettings, "pluginClassesDir")) {
+                pathElement(location: grailsSettings.pluginClassesDir.path)
+            }
+        }
+    }
+}
+
 gwtJava = { Map options, Closure body ->
     if (gwtJavaCmd) {
         ant.echo message: "Using ${gwtJavaCmd} for invoking GWT tools"
         options['jvm'] = gwtJavaCmd
     }
     def localAnt = new AntBuilder()
+    if (gwtDebugMode)
+        localAnt.project.getBuildListeners().firstElement().setMessageOutputLevel(4)
     body = body.clone()
     body = body.curry(localAnt)
     localAnt.java(options, body)
@@ -233,6 +338,8 @@ gwtJavac = { Map options, Closure body ->
         // set target to java version of JDK used by Grails
         options['target'] = ant.project.properties['ant.java.version']
     }
+    if (gwtDebugMode)
+        ant.project.getBuildListeners().firstElement().setMessageOutputLevel(4)
     ant.javac(options, body)
 }
 
@@ -303,6 +410,7 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
         }
 
         body.delegate = delegate
+        delegate
         body()
     }
 }

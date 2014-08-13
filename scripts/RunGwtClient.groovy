@@ -16,33 +16,24 @@
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 includeTargets << grailsScript('_GrailsCompile')
 
-USAGE = """
-    compile-gwt-modules [--draft]
-
-where
-    --draft  = Compiler uses draft mode, resulting in less optimised
-               JavaScript
-"""
-
-target(default: 'Compiles the GWT modules to JavaScript.') {
+target(default: 'Runs the GWT hosted mode client.') {
     depends(parseArguments)
 
-    // If arguments are provided, treat them as a list of modules to
-    // compile.
-    gwtModuleList = argsMap['params']
-
-    // Handle draft compilation mode. We assign a default value of
-    // 'null' so that we know whether we can override with the
-    // gwt.draft.compile setting.
-    gwtDraftCompile = argsMap['draft'] ?: null
+    if (argsMap['params']) {
+        // Check whether a host and port have been specified.
+        def m = argsMap["params"][0] =~ /([a-zA-Z][\w\.]*)?:?(\d+)?/
+        if (m.matches()) {
+            // The user can specify a host, a port, or both if separated
+            // by a colon. If either or both are not given, the appropriate
+            // defaults are used.
+            gwtClientServer = (m[0][1] ? m[0][1] : 'localhost') + ":" +
+                    (m[0][2] ? m[0][2] : 8080)
+        }
+    }
 
     addDependenciesToClasspath()
-
-    // Compile the GWT modules. We use the 'compile' target because
-    // 'compileGwtModules' depends on it and the module compilation
-    // is triggered by the end of the standard Grails compilation
-    // (at the moment).
     compile()
 
-    compileGwtModules()
+    // Start the hosted mode client.
+    runGwtClient()
 }

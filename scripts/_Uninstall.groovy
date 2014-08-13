@@ -13,12 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
-eventGwtCompileStart = {
-    compileGwtClasses()
-}
-
-eventGwtRunHostedStart = {
-    compileGwtClasses()
-}
+// Remove the directory for storing GWT files.
+ant.delete(dir: "${basedir}/web-app/gwt")

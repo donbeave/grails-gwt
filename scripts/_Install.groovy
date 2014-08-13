@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
-eventGwtCompileStart = {
-    compileGwtClasses()
-}
+// Create the directory for storing GWT files.
+ant.mkdir(dir: "${basedir}/web-app/gwt")
 
-eventGwtRunHostedStart = {
-    compileGwtClasses()
-}
+// Create the directory for storing GWT projects source code
+ant.mkdir(dir: "${basedir}/src/gwt")
