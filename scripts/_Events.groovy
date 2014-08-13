@@ -27,6 +27,10 @@ eventCompileStart = {
     addDependenciesToClasspath()
 }
 
+eventConfigureWarNameEnd = {
+    compileGwtModules()
+}
+
 //
 // The GWT libs must be copied to the WAR file. In addition, although
 // we don't do dynamic compilation in production mode, the plugin
