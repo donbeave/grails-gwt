@@ -56,7 +56,8 @@ gwtDebugMode = getPropertyValue('gwt.debug', 'false').toBoolean()
 grailsSrcPath = 'src/java'
 
 compilerClass = 'com.google.gwt.dev.Compiler'
-runClass = 'com.google.gwt.dev.DevMode'
+devModeClass = 'com.google.gwt.dev.DevMode'
+codeServerClass = 'com.google.gwt.dev.codeserver.CodeServer'
 
 //
 // A target for compiling any GWT modules defined in the project.
@@ -183,12 +184,7 @@ gwtClientServer = "${serverHost ?: 'localhost'}:${serverPort}"
 target(runGwtClient: 'Runs the GWT hosted mode client.') {
     event('StatusUpdate', ['Starting the GWT hosted mode client.'])
 
-    if (System.properties.'os.name' == 'Mac OS X') {
-        def javaVersion = System.properties.'java.version'
-
-        if (javaVersion.startsWith('1.8'))
-            gwtJavacCmd = 'javac'
-    }
+    fixJavac()
 
     event('GwtRunHostedStart', ['Starting the GWT hosted mode client.'])
 
@@ -196,12 +192,17 @@ target(runGwtClient: 'Runs the GWT hosted mode client.') {
 
     def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
 
+    if (!modules) {
+        event("StatusError", ['No GWT modules with entry points are available in src/gwt'])
+        exit(1)
+    }
+
     event('StatusUpdate', ["Found ${modules.size()} modules"])
 
     // GWT dev mode process does not need parent Gant process for anything.
     // Hence it is a good idea to spawn in, making parent script to continue and eventually exit
     // freeing allocated memory that could be significant (up to 512MB in the default Grails installation)
-    gwtRunWithProps(runClass, [spawn: true, fork: true]) {
+    gwtRunWithProps(devModeClass, [spawn: true, fork: true]) {
         // Hosted mode requires run with 32-bit parameter on Mac OS X (only need for Apple's compiled JVM).
         if (antProject.properties.'os.name' == 'Mac OS X') {
             def osVersion = antProject.properties.'os.version'.split(/\./)
@@ -234,6 +235,53 @@ target(runGwtClient: 'Runs the GWT hosted mode client.') {
         arg(value: "http://${gwtClientServer}/${grailsAppName}")
 
         arg(line: modules.join(' '))
+    }
+}
+
+target(runCodeServer: 'Runs the Super Dev Mode server.') {
+    event('StatusUpdate', ['Starting the GWT Super Dev Mode server.'])
+
+    fixJavac()
+
+    event('GwtRunHostedStart', ['Starting the GWT Super Dev Mode server.'])
+
+    // Check for GWT 2.5 super dev mode.
+    ant.available(classname: "com.google.gwt.dev.codeserver.CodeServer", property: 'isCodeServerAvailable') {
+        ant.classpath {
+            gwtResolvedDependencies.each { File f ->
+                pathElement(location: f.absolutePath)
+            }
+        }
+    }
+
+    if (ant.project.properties.isCodeServerAvailable == null) {
+        event('StatusError', ['Super Dev Mode only support in GWT >= 2.5.0 version'])
+        exit(1)
+    }
+
+    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+
+    def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
+
+    if (!argsMap['module']) {
+        if (!modules) {
+            event("StatusError", ['No GWT modules with entry points are available in src/gwt'])
+            exit(1)
+        }
+
+        event('StatusUpdate', ["Found ${modules.size()} modules"])
+    }
+
+    gwtRunWithProps(codeServerClass, [spawn: false, fork: true]) {
+        if (argsMap['bindAddress']) {
+            arg(value: '-bindAddress')
+            arg(value: argsMap['bindAddress'])
+        }
+        if (argsMap['module']) {
+            arg(line: argsMap['module'])
+        } else {
+            arg(line: modules.join(" "))
+        }
     }
 }
 
@@ -525,6 +573,15 @@ addDependenciesToClasspath = {
 
 def parseVersion(String version) {
     version.tokenize('.').collect { it.toInteger() }
+}
+
+def fixJavac() {
+    if (System.properties.'os.name' == 'Mac OS X') {
+        def javaVersion = System.properties.'java.version'
+
+        if (javaVersion.startsWith('1.8'))
+            gwtJavacCmd = 'javac'
+    }
 }
 
 addGwtDependencies()
