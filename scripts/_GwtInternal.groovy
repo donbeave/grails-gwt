@@ -183,9 +183,6 @@ gwtClientServer = "${serverHost ?: 'localhost'}:${serverPort}"
 
 target(runGwtClient: 'Runs the GWT hosted mode client.') {
     event('StatusUpdate', ['Starting the GWT hosted mode client.'])
-
-    fixJavac()
-
     event('GwtRunHostedStart', ['Starting the GWT hosted mode client.'])
 
     def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
@@ -240,9 +237,6 @@ target(runGwtClient: 'Runs the GWT hosted mode client.') {
 
 target(runCodeServer: 'Runs the Super Dev Mode server.') {
     event('StatusUpdate', ['Starting the GWT Super Dev Mode server.'])
-
-    fixJavac()
-
     event('GwtRunHostedStart', ['Starting the GWT Super Dev Mode server.'])
 
     // Check for GWT 2.5 super dev mode.
@@ -463,6 +457,19 @@ gwtRunWithProps = { String className, Map properties, Closure body ->
     }
 }
 
+addDependenciesToClasspath = {
+    gwtResolvedDependencies.each { File f ->
+        if (!f.name.contains('gwt-dev')) {
+            //println "Adding ${f.name} to classpath"
+            rootLoader.addURL(f.toURL())
+
+            if (classLoader) {
+                classLoader.addURL(f.toURL())
+            }
+        }
+    }
+}
+
 def addGwtCoreToDependencies(String version) {
     println "Adding GWT ${version}"
 
@@ -558,25 +565,12 @@ def maybeUseGwtLibDir() {
     }
 }
 
-addDependenciesToClasspath = {
-    gwtResolvedDependencies.each { File f ->
-        if (!f.name.contains('gwt-dev')) {
-            //println "Adding ${f.name} to classpath"
-            rootLoader.addURL(f.toURL())
-
-            if (classLoader) {
-                classLoader.addURL(f.toURL())
-            }
-        }
-    }
-}
-
 def parseVersion(String version) {
     version.tokenize('.').collect { it.toInteger() }
 }
 
 def fixJavac() {
-    if (System.properties.'os.name' == 'Mac OS X') {
+    if (!gwtJavacCmd && System.properties.'os.name' == 'Mac OS X') {
         def javaVersion = System.properties.'java.version'
 
         if (javaVersion.startsWith('1.8'))
@@ -584,5 +578,6 @@ def fixJavac() {
     }
 }
 
+fixJavac()
 addGwtDependencies()
 resolveGwtDependencies()
