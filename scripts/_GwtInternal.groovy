@@ -113,7 +113,7 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     if (ret == 1) {
         event('GwtCompileFail', ['Failed to compile all GWT modules'])
         //This ensures that anything monitoring this process (eg a CI agent), will record this as failed
-        throw new RuntimeException("Failed to compile all GWT Modules")
+        throw new RuntimeException('Failed to compile all GWT Modules')
     }
 
     event('StatusUpdate', ['Finished compiling GWT modules'])
@@ -139,7 +139,7 @@ target(compileI18n: 'Compiles any i18n properties files for any GWT modules in \
 
         // Split the module name into package and name parts. The
         // package part includes the trailing '.'.
-        def pkg = ""
+        def pkg = ''
         def pos = moduleName.lastIndexOf('.')
         if (pos > -1) {
             pkg = moduleName[0..pos]
@@ -190,7 +190,7 @@ target(runGwtClient: 'Runs the GWT hosted mode client.') {
     def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
 
     if (!modules) {
-        event("StatusError", ['No GWT modules with entry points are available in src/gwt'])
+        event('StatusError', ['No GWT modules with entry points are available in src/gwt'])
         exit(1)
     }
 
@@ -259,7 +259,7 @@ target(runCodeServer: 'Runs the Super Dev Mode server.') {
 
     if (!argsMap['module']) {
         if (!modules) {
-            event("StatusError", ['No GWT modules with entry points are available in src/gwt'])
+            event('StatusError', ['No GWT modules with entry points are available in src/gwt'])
             exit(1)
         }
 
@@ -274,7 +274,7 @@ target(runCodeServer: 'Runs the Super Dev Mode server.') {
         if (argsMap['module']) {
             arg(line: argsMap['module'])
         } else {
-            arg(line: modules.join(" "))
+            arg(line: modules.join(' '))
         }
     }
 }
@@ -322,7 +322,7 @@ compileGwtClasses = {
     //    http://code.google.com/p/google-gin/issues/detail?id=36
     //
     ant.mkdir(dir: gwtClassesDir)
-    gwtJavac(destDir: gwtClassesDir, includes: "**/*.java") {
+    gwtJavac(destDir: gwtClassesDir, includes: '**/*.java') {
         src(path: 'src/gwt') //current project gwt modules
         //include any sources from any included plugins
         buildConfig?.gwt?.plugins?.each { pluginName ->
@@ -338,7 +338,7 @@ compileGwtClasses = {
 
             if (gwtLibFile.exists()) {
                 fileset(dir: gwtLibPath) {
-                    include(name: "*.jar")
+                    include(name: '*.jar')
                 }
             }
             if (gwtPluginLibFile.exists()) {
@@ -353,7 +353,7 @@ compileGwtClasses = {
             // add the directory where plugin classes are compiled
             // to. Pre-1.3, plugin classes were compiled to the same
             // directory as the application classes.
-            if (grailsSettings.metaClass.hasProperty(grailsSettings, "pluginClassesDir")) {
+            if (grailsSettings.metaClass.hasProperty(grailsSettings, 'pluginClassesDir')) {
                 pathElement(location: grailsSettings.pluginClassesDir.path)
             }
         }
@@ -564,7 +564,7 @@ def resolveMavenDependencies() {
 
 def maybeUseGwtLibDir() {
     if (gwtLibFile.exists()) {
-        println "Adding lib/gwt/* to the GWT environment"
+        println 'Adding lib/gwt/* to the GWT environment'
 
         gwtLibFile.eachFileMatch(~/.+\.jar$/) { dependencyJar ->
             // add artifacts to the list of Grails provided dependencies
@@ -581,12 +581,8 @@ def parseVersion(String version) {
 }
 
 def fixJavac() {
-    if (!gwtJavacCmd && System.properties.'os.name' == 'Mac OS X') {
-        def javaVersion = System.properties.'java.version'
-
-        if (javaVersion.startsWith('1.8'))
-            gwtJavacCmd = 'javac'
-    }
+    if (!gwtJavacCmd && System.properties.'java.version'?.startsWith('1.8'))
+        gwtJavacCmd = 'javac'
 }
 
 fixJavac()

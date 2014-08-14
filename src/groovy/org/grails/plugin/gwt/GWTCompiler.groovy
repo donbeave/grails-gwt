@@ -101,10 +101,8 @@ class GWTCompiler {
     }
 
     boolean shouldUseFullParallel() {
-
-        if (grailsSettings.config.gwt.parallel != null) {
+        if (grailsSettings.config.gwt.parallel != null)
             return grailsSettings.config.gwt.parallel
-        }
 
         return modules.size() > 2
     }
@@ -119,15 +117,14 @@ class GWTCompiler {
                 compile(moduleName)
             } catch (Exception ex) {
                 failed << moduleName
-                if (!(ex instanceof GwtCompilationException)) {
+                if (!(ex instanceof GwtCompilationException))
                     ex.printStackTrace()
-                }
             }
         }
     }
 
     def fullParallelCompile() {
-        println "Selected Full Parallel compilation :-"
+        println 'Selected Full Parallel compilation :-'
         def executor = Executors.newFixedThreadPool(numThreads)
 
         int remaining = 0
@@ -176,7 +173,7 @@ class GWTCompiler {
 
         try {
 
-            def result = gwtRun(compilerClass, [resultproperty: "result", fork: true, output: "${logFile.absoluteFile}", error: "${logFile.absoluteFile}", append: true]) {
+            def result = gwtRun(compilerClass, [resultproperty: 'result', fork: true, output: "${logFile.absoluteFile}", error: "${logFile.absoluteFile}", append: true]) {
                 if (grailsSettings.config.gwt.compile.args) {
                     def c = grailsSettings.config.gwt.compile.args.clone()
                     c.delegate = delegate
@@ -187,27 +184,27 @@ class GWTCompiler {
                 arg(value: '-style')
                 arg(value: gwtOutputStyle)
 
-                sysproperty(key: "gwt.persistentunitcachedir", value: "${baseDir}/target/gwt/unitCache")
+                sysproperty(key: 'gwt.persistentunitcachedir', value: "${baseDir}/target/gwt/unitCache")
 
                 // Multi-threaded compilation.
                 if (numCompileWorkers > 0) {
-                    arg(value: "-localWorkers")
+                    arg(value: '-localWorkers')
                     arg(value: numCompileWorkers)
                 }
 
                 // Draft compile - GWT 2.0+ only
                 if (draft) {
-                    arg(value: "-draftCompile")
+                    arg(value: '-draftCompile')
                 }
 
-                arg(value: "-war")
+                arg(value: '-war')
                 arg(value: gwtOutputPath)
 
                 arg(value: moduleName)
             }
-            logFile << "================================================================\n"
+            logFile << '================================================================\n'
             logFile << "   Compilation finished at ${new Date()}\n"
-            logFile << "================================================================\n\n"
+            logFile << '================================================================\n\n'
 
             if (result.result != "0") {
                 def newLogFile = new File(logDir, "FAILED-${moduleName}.log")
