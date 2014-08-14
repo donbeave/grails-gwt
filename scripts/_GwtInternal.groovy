@@ -296,10 +296,10 @@ addGwtDependencies = {
             def m = depDefinition =~ /([a-zA-Z0-9\-\/\._+=]*?):([a-zA-Z0-9\-\/\._+=]+?):([a-zA-Z0-9\-\/\._+=]+)/
             if (m.matches()) {
                 String name = m[0][2]
-                def group = m[0][1]
-                def version = m[0][3]
+                String group = m[0][1]
+                String version = m[0][3]
 
-                addDependency(group, name, version)
+                addDependency(group, name, version, Dependency.WILDCARD)
             } else {
                 println "${depDefinition} isn't a valid definition, exiting"
                 exit(1)
@@ -475,30 +475,30 @@ addDependenciesToClasspath = {
 def addGwtCoreToDependencies(String version) {
     println "Adding GWT ${version}"
 
-    addDependency('com.google.gwt', 'gwt-dev', version)
-    addDependency('com.google.gwt', 'gwt-user', version)
-    addDependency('com.google.gwt', 'gwt-servlet', version)
+    addDependency('com.google.gwt', 'gwt-dev', version, Dependency.WILDCARD)
+    addDependency('com.google.gwt', 'gwt-user', version, Dependency.WILDCARD)
+    addDependency('com.google.gwt', 'gwt-servlet', version, Dependency.WILDCARD)
 
     // GWT version >= 2.5.0
     def versionComponents = parseVersion(version)
     if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 5)) {
-        addDependency('com.google.gwt', 'gwt-codeserver', version)
-        addDependency('org.json', 'json', '20090211')
+        addDependency('com.google.gwt', 'gwt-codeserver', version, Dependency.WILDCARD)
+        addDependency('org.json', 'json', '20090211', Dependency.WILDCARD)
     }
 }
 
 def addGinToDependencies(String version) {
     println "Adding Google Gin ${version} to GWT environment"
 
-    addDependency('com.google.gwt.inject', 'gin', version)
+    addDependency('com.google.gwt.inject', 'gin', version, Dependency.WILDCARD)
 
     if (version.contains('1.0')) {
-        addDependency('com.google.inject', 'guice', '2.0')
+        addDependency('com.google.inject', 'guice', '2.0', Dependency.WILDCARD)
     } else if (version.contains('1.5.0') || version.startsWith('2.')) {
-        addDependency('com.google.inject', 'guice', '3.0')
-        addDependency('com.google.inject.extensions', 'guice-assistedinject', '3.0')
-        addDependency('javax.inject', 'javax.inject', '1')
-        addDependency('aopalliance', 'aopalliance', '1.0')
+        addDependency('com.google.inject', 'guice', '3.0', Dependency.WILDCARD)
+        addDependency('com.google.inject.extensions', 'guice-assistedinject', '3.0', Dependency.WILDCARD)
+        addDependency('javax.inject', 'javax.inject', '1', Dependency.WILDCARD)
+        addDependency('aopalliance', 'aopalliance', '1.0', Dependency.WILDCARD)
     } else {
         println "Google Gin ${version} not supported by plugin, please manage the dependencies manually"
         exit(1)
@@ -508,20 +508,20 @@ def addGinToDependencies(String version) {
 def addGwtpToDependencies(String version) {
     println "Adding GWTP ${version} to GWT environment"
 
-    addDependency('com.gwtplatform', 'gwtp-mvp-client', version)
-    addDependency('com.gwtplatform', 'gwtp-mvp-shared', version)
-    addDependency('com.gwtplatform', 'gwtp-clients-common', version)
-    addDependency('commons-lang', 'commons-lang', '2.6')
-    addDependency('org.apache.velocity', 'velocity', '1.7')
+    addDependency('com.gwtplatform', 'gwtp-mvp-client', version, Dependency.WILDCARD)
+    addDependency('com.gwtplatform', 'gwtp-mvp-shared', version, Dependency.WILDCARD)
+    addDependency('com.gwtplatform', 'gwtp-clients-common', version, Dependency.WILDCARD)
+    addDependency('commons-lang', 'commons-lang', '2.6', Dependency.WILDCARD)
+    addDependency('org.apache.velocity', 'velocity', '1.7', Dependency.WILDCARD)
 }
 
 def addGuavaToDependencies(String version) {
     println "Adding Guava ${version} to GWT environment"
 
-    addDependency('com.google.code.findbugs', 'jsr305', '3.0.0')
-    addDependency('com.google.guava', 'guava', version)
-    addDependency('com.google.guava', 'guava-gwt', version)
-    addDependency('com.google.guava', 'guava-annotations', 'r03')
+    addDependency('com.google.code.findbugs', 'jsr305', '3.0.0', Dependency.WILDCARD)
+    addDependency('com.google.guava', 'guava', version, Dependency.WILDCARD)
+    addDependency('com.google.guava', 'guava-gwt', version, Dependency.WILDCARD)
+    addDependency('com.google.guava', 'guava-annotations', 'r03', Dependency.WILDCARD)
 }
 
 def addDependency(String group, String name, String version, String wildcard = null) {
