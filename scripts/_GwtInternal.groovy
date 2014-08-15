@@ -477,13 +477,13 @@ def addGwtCoreToDependencies(String version) {
 
     addDependency('com.google.gwt', 'gwt-dev', version, Dependency.WILDCARD)
     addDependency('com.google.gwt', 'gwt-user', version, Dependency.WILDCARD)
-    addDependency('com.google.gwt', 'gwt-servlet', version, Dependency.WILDCARD)
+    addDependency('com.google.gwt', 'gwt-servlet', version, Dependency.WILDCARD, true)
 
     // GWT version >= 2.5.0
     def versionComponents = parseVersion(version)
     if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 5)) {
         addDependency('com.google.gwt', 'gwt-codeserver', version, Dependency.WILDCARD)
-        addDependency('org.json', 'json', '20090211', Dependency.WILDCARD)
+        addDependency('org.json', 'json', '20090211', Dependency.WILDCARD, true)
     }
 }
 
@@ -508,9 +508,9 @@ def addGinToDependencies(String version) {
 def addGwtpToDependencies(String version) {
     println "Adding GWTP ${version} to GWT environment"
 
+    addDependency('com.gwtplatform', 'gwtp-clients-common', version, Dependency.WILDCARD, true)
     addDependency('com.gwtplatform', 'gwtp-mvp-client', version, Dependency.WILDCARD)
-    addDependency('com.gwtplatform', 'gwtp-mvp-shared', version, Dependency.WILDCARD)
-    addDependency('com.gwtplatform', 'gwtp-clients-common', version, Dependency.WILDCARD)
+    addDependency('com.gwtplatform', 'gwtp-mvp-shared', version, Dependency.WILDCARD, true)
     addDependency('commons-lang', 'commons-lang', '2.6', Dependency.WILDCARD)
     addDependency('org.apache.velocity', 'velocity', '1.7', Dependency.WILDCARD)
 }
@@ -519,24 +519,29 @@ def addGuavaToDependencies(String version) {
     println "Adding Guava ${version} to GWT environment"
 
     addDependency('com.google.code.findbugs', 'jsr305', '3.0.0', Dependency.WILDCARD)
-    addDependency('com.google.guava', 'guava', version, Dependency.WILDCARD)
+    addDependency('com.google.guava', 'guava', version, Dependency.WILDCARD, true)
     addDependency('com.google.guava', 'guava-gwt', version, Dependency.WILDCARD)
-    addDependency('com.google.guava', 'guava-annotations', 'r03', Dependency.WILDCARD)
+    addDependency('com.google.guava', 'guava-annotations', 'r03', Dependency.WILDCARD, true)
 }
 
-def addDependency(String group, String name, String version, String wildcard = null) {
+def addDependency(String group, String name, String version, String wildcard = null, boolean exported = false) {
     //Create a dependency with the supplied information
     final dependency = new Dependency(group, name, version)
-    dependency.exported = false
+    dependency.exported = exported
     if (wildcard)
         dependency.exclude(wildcard)
 
-    addMavenDependency(dependency)
+    if (exported) {
+        addMavenDependency(dependency, BuildSettings.COMPILE_SCOPE)
+        addMavenDependency(dependency, BuildSettings.RUNTIME_SCOPE)
+    } else {
+        addMavenDependency(dependency, BuildSettings.PROVIDED_SCOPE)
+    }
     gwtDependencies << dependency
 }
 
-def addMavenDependency(dependency) {
-    grailsSettings.dependencyManager.addDependency(dependency, BuildSettings.PROVIDED_SCOPE)
+def addMavenDependency(Dependency dependency, String scope) {
+    grailsSettings.dependencyManager.addDependency(dependency, scope)
 }
 
 def resolveMavenDependencies() {
@@ -547,14 +552,22 @@ def resolveMavenDependencies() {
     artifacts = artifacts.unique()
 
     gwtDependencies.each { dependency ->
-        def dependencyJar = artifacts.find {
+        def artifact = artifacts.find {
             it.dependency.group.equals(dependency.group) && it.dependency.name.equals(dependency.name)
-        }?.file
+        }
+
+        def dependencyJar = artifact?.file
 
         if (dependencyJar) {
             // add artifacts to the list of Grails provided dependencies
             // this enables SpringSource STS to build Eclipse's classpath properly
-            grailsSettings.providedDependencies << dependencyJar
+            if (dependency.exported) {
+                grailsSettings.compileDependencies << dependencyJar
+                grailsSettings.runtimeDependencies << dependencyJar
+            } else {
+                grailsSettings.providedDependencies << dependencyJar
+            }
+            grailsSettings.testDependencies << dependencyJar
 
             if (!gwtResolvedDependencies.contains(dependencyJar))
                 gwtResolvedDependencies << dependencyJar
@@ -569,7 +582,8 @@ def maybeUseGwtLibDir() {
         gwtLibFile.eachFileMatch(~/.+\.jar$/) { dependencyJar ->
             // add artifacts to the list of Grails provided dependencies
             // this enables SpringSource STS to build Eclipse's classpath properly
-            grailsSettings.providedDependencies << dependencyJar
+            grailsSettings.compileDependencies << dependencyJar
+
             if (!gwtResolvedDependencies.contains(dependencyJar))
                 gwtResolvedDependencies << dependencyJar
         }
