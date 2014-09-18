@@ -15,22 +15,22 @@
  */
 
 eventGwtCompileStart = {
-    includeTargets << new File(gwtPluginDir, '/scripts/_GwtInternal.groovy')
+    includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
     compileGwtClasses()
 }
 
 eventGwtRunHostedStart = {
-    includeTargets << new File(gwtPluginDir, '/scripts/_GwtInternal.groovy')
+    includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
     compileGwtClasses()
 }
 
 eventCompileStart = {
-    includeTargets << new File(gwtPluginDir, '/scripts/_GwtInternal.groovy')
+    includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
     addDependenciesToClasspath()
 }
 
 eventConfigureWarNameEnd = {
-    includeTargets << new File(gwtPluginDir, '/scripts/_GwtInternal.groovy')
+    includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
     compileGwtModules()
 }
 
@@ -42,7 +42,7 @@ eventConfigureWarNameEnd = {
 // in the system.
 //
 eventCreateWarStart = { warName, stagingDir ->
-    includeTargets << new File(gwtPluginDir, '/scripts/_GwtInternal.groovy')
+    includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
     if (gwtResolvedDependencies) {
         def gwtDevJar = gwtResolvedDependencies.find { it.name.contains('gwt-dev') }
 
