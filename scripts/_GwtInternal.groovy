@@ -291,6 +291,8 @@ addGwtDependencies = {
         addGwtpToDependencies(buildConfig.gwt.gwtp.version)
     if (buildConfig.gwt.guava.version)
         addGuavaToDependencies(buildConfig.gwt.guava.version)
+    if (buildConfig.gwt.eventbinder.version)
+        addEventBinderToDependencies(buildConfig.gwt.eventbinder.version)
     if (buildConfig.gwt.dependencies) {
         buildConfig.gwt.dependencies.each { depDefinition ->
             def m = depDefinition =~ /([a-zA-Z0-9\-\/\._+=]*?):([a-zA-Z0-9\-\/\._+=]+?):([a-zA-Z0-9\-\/\._+=]+)/
@@ -503,6 +505,12 @@ def addGinToDependencies(String version) {
         println "Google Gin ${version} not supported by plugin, please manage the dependencies manually"
         exit(1)
     }
+}
+
+def addEventBinderToDependencies(String version) {
+    println "Adding EventBinder ${version} to GWT environment"
+
+    addDependency('com.google.gwt.eventbinder', 'eventbinder', version, Dependency.WILDCARD, true)
 }
 
 def addGwtpToDependencies(String version) {
