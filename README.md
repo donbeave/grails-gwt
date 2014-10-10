@@ -1,4 +1,5 @@
 # Grails GWT Plugin
+[![Build Status](https://travis-ci.org/donbeave/grails-gwt.svg?branch=master)](https://travis-ci.org/donbeave/grails-gwt)
 
 ## Introduction
 
