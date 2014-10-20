@@ -30,6 +30,7 @@ class GWTCompiler {
     boolean draft = false
     def baseDir
     def logDir
+    def extraDir
 
     def gwtOutputStyle = 'PRETTY'
     def gwtOutputPath
@@ -44,8 +45,19 @@ class GWTCompiler {
     private int numCompileWorkers = 0
 
     public int compileAll() {
+        // clean target path
+        new File('target/gwt').deleteDir()
+        new File('target/gwt').mkdirs()
+
         logDir = new File(baseDir, 'target/gwt/logs')
         logDir.mkdirs()
+
+        extraDir = new File(baseDir, 'target/gwt/extras')
+        extraDir.mkdirs()
+
+        // clean output path
+        new File(gwtOutputPath).deleteDir()
+        new File(gwtOutputPath).mkdirs()
 
         long then = System.currentTimeMillis()
         modules = gwtModuleList ?: findModules("${baseDir}/src/gwt")
@@ -57,15 +69,12 @@ class GWTCompiler {
             numThreads = Runtime.runtime.availableProcessors()
         }
 
-        if (compileReport) {
+        if (compileReport)
             println 'Will generate a compilation report'
-        }
-        if (gwtOutputStyle) {
+        if (gwtOutputStyle)
             println "Using GWT JS Style ${gwtOutputStyle}"
-        }
-        if (draft) {
+        if (draft)
             println 'Draft compilation (not for production)'
-        }
         println "Will compile ${modules.size()} modules"
 
         failed = []
@@ -158,7 +167,6 @@ class GWTCompiler {
     }
 
     def compile(String moduleName) {
-
         println "  Compiling ${moduleName}"
 
         def logFile = new File(logDir, "${moduleName}.log")
@@ -181,6 +189,8 @@ class GWTCompiler {
                 }
 
                 jvmarg(value: '-Djava.awt.headless=true')
+
+                arg(value: '-saveSource')
                 arg(value: '-style')
                 arg(value: gwtOutputStyle)
 
@@ -199,6 +209,9 @@ class GWTCompiler {
 
                 arg(value: '-war')
                 arg(value: gwtOutputPath)
+
+                arg(value: '-extra')
+                arg(value: extraDir)
 
                 arg(value: moduleName)
             }
