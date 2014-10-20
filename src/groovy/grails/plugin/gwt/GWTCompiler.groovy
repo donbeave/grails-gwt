@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.grails.plugin.gwt
+package grails.plugin.gwt
 
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors

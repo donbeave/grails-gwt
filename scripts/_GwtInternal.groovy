@@ -71,7 +71,7 @@ codeServerClass = 'com.google.gwt.dev.codeserver.CodeServer'
 target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     if (gwtDisableCompile) return
 
-    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+    def GWTCompiler = classLoader.loadClass('grails.plugin.gwt.GWTCompiler')
 
     // Make sure that the I18n properties files are compiled before
     // the modules are, unless we're not keeping the properties files
@@ -124,7 +124,7 @@ target(compileI18n: 'Compiles any i18n properties files for any GWT modules in \
     // This triggers the Events scripts in the application and plugins.
     event('GwtCompileI18nStart', ['Starting to compile the i18n properties files.'])
 
-    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+    def GWTCompiler = classLoader.loadClass('grails.plugin.gwt.GWTCompiler')
 
     // Compile any i18n properties files that match the filename
     // "<Module>Constants.properties".
@@ -185,7 +185,7 @@ target(runGwtClient: 'Runs the GWT hosted mode client.') {
     event('StatusUpdate', ['Starting the GWT hosted mode client.'])
     event('GwtRunHostedStart', ['Starting the GWT hosted mode client.'])
 
-    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+    def GWTCompiler = classLoader.loadClass('grails.plugin.gwt.GWTCompiler')
 
     def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
 
@@ -253,7 +253,7 @@ target(runCodeServer: 'Runs the Super Dev Mode server.') {
         exit(1)
     }
 
-    def GWTCompiler = classLoader.loadClass('org.grails.plugin.gwt.GWTCompiler')
+    def GWTCompiler = classLoader.loadClass('grails.plugin.gwt.GWTCompiler')
 
     def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
 
