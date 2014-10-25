@@ -493,11 +493,17 @@ def addGwtCoreToDependencies(String version) {
     addDependency('com.google.gwt', 'gwt-user', version, Dependency.WILDCARD)
     addDependency('com.google.gwt', 'gwt-servlet', version, Dependency.WILDCARD, true)
 
-    // GWT version >= 2.5.0
     def versionComponents = parseVersion(version)
+
+    // GWT version >= 2.5.0
     if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 5)) {
         addDependency('com.google.gwt', 'gwt-codeserver', version, Dependency.WILDCARD)
         addDependency('org.json', 'json', '20090211', Dependency.WILDCARD, true)
+    }
+
+    // GWT version >= 2.7.0
+    if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 7)) {
+        addDependency('org.ow2.asm', 'asm', '5.0.3', Dependency.WILDCARD)
     }
 }
 
