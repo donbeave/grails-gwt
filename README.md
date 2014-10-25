@@ -131,7 +131,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 </table>
 
-Compile parameters
+#### Compile parameters
 
 <table>
 	<tr>
