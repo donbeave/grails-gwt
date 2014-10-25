@@ -611,6 +611,8 @@ def maybeUseGwtLibDir() {
 }
 
 def parseVersion(String version) {
+    if (version.contains('-'))
+        version = version.split('-')[0]
     version.tokenize('.').collect { it.toInteger() }
 }
 
