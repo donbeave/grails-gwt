@@ -7,25 +7,308 @@ The Google Web Toolkit (GWT) is an advanced AJAX framework that allows you to de
 The plugin makes it easy to incorporate GWT code into your GSP pages, and it also simplifies the handling of RPC requests on the server. If you have not used GWT before, please read the documentation on the GWT website.
 
 
-This is the source of the plugin.
+## Configuration
 
-The plugin host page is at http://grails.org/plugin/gwt
+The following configuration options are available (e.g. by adding some or all of them to your `BuildConfig.groovy`):
 
-Documentation can be found at http://simplicityitself.github.com/grails-gwt/guide/
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.version</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
-The Google Group can be found at https://groups.google.com/group/grails-gwt
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.gin.version</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.gwtp.version</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
-## Installation
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.guava.version</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
-Add the plugin, plus the extended-dependency-manager plugin for accessing the current dependency manager.
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.eventbinder.version</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
-```
-plugins {
-  build ":extended-dependency-manager:0.5.5"
-  compile ":gwt:1.0", {
-    transitive=false
-  }
-}
-```
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.dependencies</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>List&lt;String&gt;</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
 
+#### Compile parameters
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.local.workers</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Integer</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.draft</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Boolean</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>false</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.report</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Boolean</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>false</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.optimizationLevel</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Integer</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.logLevel</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Integer</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>null</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.classMetadata</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Boolean</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>true</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.castChecking</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Boolean</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>true</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.aggressiveOptimization</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>Boolean</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>true</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>Key</td>
+		<td><strong><code>gwt.compile.jsInteropMode</code></strong></td>
+	</tr>
+	<tr>
+		<td>Type</td>
+		<td><code>String</code></td>
+	</tr>
+	<tr>
+		<td>Default</td>
+		<td><code>NONE</code></td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>
+		</td>
+	</tr>
+</table>
