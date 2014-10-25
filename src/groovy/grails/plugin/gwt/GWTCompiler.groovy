@@ -35,6 +35,13 @@ class GWTCompiler {
     def gwtOutputStyle = 'PRETTY'
     def gwtOutputPath
     def compileReport
+    def optimizationLevel
+    def logLevel
+    def classMetadata
+    def castChecking
+    def closureCompiler
+    def aggressiveOptimization
+    def jsInteropMode // GWT 2.7+ only
     def gwtModuleList
     def grailsSettings
     def gwtRun
@@ -75,6 +82,21 @@ class GWTCompiler {
             println "Using GWT JS Style ${gwtOutputStyle}"
         if (draft)
             println 'Draft compilation (not for production)'
+        if (optimizationLevel)
+            println "Optimization level: ${optimizationLevel}"
+        if (logLevel)
+            println "Log level: ${logLevel}"
+        if (classMetadata == false)
+            println 'Disable class metadata'
+        if (castChecking == false)
+            println 'Disable cast checking'
+        if (aggressiveOptimization == false)
+            println 'Disable aggressive optimization'
+        if (closureCompiler)
+            println 'Using Closure compiler'
+        if (jsInteropMode)
+            println "JS interop mode: ${jsInteropMode}"
+
         println "Will compile ${modules.size()} modules"
 
         failed = []
@@ -203,8 +225,37 @@ class GWTCompiler {
                 }
 
                 // Draft compile - GWT 2.0+ only
-                if (draft) {
+                if (draft)
                     arg(value: '-draftCompile')
+
+                if (compileReport)
+                    arg(value: '-compileReport')
+
+                if (optimizationLevel) {
+                    arg(value: '-optimize')
+                    arg(value: optimizationLevel)
+                }
+
+                if (logLevel) {
+                    arg(value: '-logLevel')
+                    arg(value: logLevel)
+                }
+
+                if (classMetadata == false)
+                    arg(value: '-XdisableClassMetadata')
+
+                if (castChecking == false)
+                    arg(value: '-XdisableCastChecking')
+
+                if (aggressiveOptimization == false)
+                    arg(value: '-XdisableAggressiveOptimization')
+
+                if (closureCompiler)
+                    arg(value: '-XenableClosureCompiler')
+
+                if (jsInteropMode) {
+                    arg(value: '-XjsInteropMode')
+                    arg(value: jsInteropMode)
                 }
 
                 arg(value: '-war')

@@ -44,7 +44,7 @@ gwtSrcPath = 'src/gwt'
 gwtClassesDir = new File(grailsSettings.projectWorkDir, 'gwtclasses')
 gwtJavaCmd = getPropertyValue('gwt.java.cmd', null)
 gwtJavacCmd = getPropertyValue('gwt.javac.cmd', null)
-gwtOutputPath = getPropertyValue('gwt.output.path', "${basedir}/web-app/js/gwt")
+gwtOutputPath = getPropertyValue('gwt.output.path', "$basedir/web-app/js/gwt")
 gwtOutputStyle = getPropertyValue('gwt.output.style', 'OBF')
 gwtDisableCompile = getPropertyValue('gwt.compile.disable', 'false').toBoolean()
 gwtLibPath = "$basedir/lib/gwt"
@@ -77,17 +77,23 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     // the modules are, unless we're not keeping the properties files
     // in sync with the Java interfaces.
     if (buildConfig.gwt.sync.i18n instanceof Map || buildConfig.gwt.sync.i18n == true) {
-        //compileI18n()
+        compileI18n()
     }
 
     // Draft compilation.
-    if (!(getBinding().variables.containsKey('gwtDraftCompile'))) {
+    if (!(getBinding().variables.containsKey('gwtDraftCompile')))
         gwtDraftCompile = null
-    }
 
-    if (gwtDraftCompile == null) {
-        gwtDraftCompile = getPropertyValue('gwt.draft.compile', false).toBoolean()
-    }
+    if (gwtDraftCompile == null)
+        gwtDraftCompile = getPropertyValue('gwt.compile.draft', false).toBoolean()
+
+    def compileReport = getPropertyValue('gwt.compile.report', false).toBoolean()
+    def compileOptimize = getPropertyValue('gwt.compile.optimizationLevel', null)?.toInteger()
+    def logLevel = getPropertyValue('gwt.compile.logLevel', null)?.toInteger()
+    def classMetadata = getPropertyValue('gwt.compile.classMetadata', true).toBoolean()
+    def castChecking = getPropertyValue('gwt.compile.castChecking', true).toBoolean()
+    def aggressiveOptimization = getPropertyValue('gwt.compile.aggressiveOptimization', true).toBoolean()
+    def jsInteropMode = getPropertyValue('gwt.compile.jsInteropMode', null)
 
     // This triggers the Events scripts in the application and plugins.
     event('GwtCompileStart', ['Starting to compile the GWT modules.'])
@@ -103,7 +109,13 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
     compiler.draft = gwtDraftCompile
     compiler.gwtOutputStyle = gwtOutputStyle
     compiler.gwtOutputPath = gwtOutputPath
-//    compiler.compileReport = compileReport
+    compiler.compileReport = compileReport
+    compiler.optimizationLevel = compileOptimize
+    compiler.logLevel = logLevel
+    compiler.classMetadata = classMetadata
+    compiler.castChecking = castChecking
+    compiler.aggressiveOptimization = aggressiveOptimization
+    compiler.jsInteropMode = jsInteropMode
     compiler.gwtModuleList = modules
     compiler.grailsSettings = grailsSettings
     compiler.compilerClass = compilerClass
