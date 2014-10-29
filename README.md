@@ -1,4 +1,4 @@
-# Grails GWT Plugin
+# Grails GWT Plugin 
 [![Build Status](https://travis-ci.org/donbeave/grails-gwt.svg?branch=master)](https://travis-ci.org/donbeave/grails-gwt)
 
 ## Introduction
@@ -220,7 +220,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Type</td>
-		<td><code>Integer</code></td>
+		<td><code>String</code></td>
 	</tr>
 	<tr>
 		<td>Default</td>
