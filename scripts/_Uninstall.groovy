@@ -15,4 +15,5 @@
  */
 
 // Remove the directory for storing GWT files.
-ant.delete(dir: "${basedir}/web-app/js/gwt")
+ant.delete(dir: "$basedir/web-app/js/gwt")
+ant.delete(dir: "$basedir/grails-app/assets/javascripts/gwt")

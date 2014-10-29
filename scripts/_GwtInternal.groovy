@@ -15,6 +15,7 @@
  */
 import grails.util.BuildSettings
 import grails.util.GrailsNameUtils
+import org.codehaus.groovy.grails.plugins.GrailsPluginInfo
 import org.codehaus.groovy.grails.resolve.Dependency
 
 // No point doing this stuff more than once.
@@ -38,13 +39,23 @@ if (!(getBinding().variables.containsKey('gwtModuleList'))) {
 // Common properties and closures (used as re-usable functions).
 ant.property(environment: 'env')
 
+// check for Asset-Pipeline plugin
+boolean isAssetPipelinePluginInstalled = false
+
+for (GrailsPluginInfo info in pluginSettings.getPluginInfos()) {
+    if (info.name.equals('asset-pipeline')) {
+        isAssetPipelinePluginInstalled = true
+    }
+}
+
 gwtResolvedDependencies = []
 gwtDependencies = []
 gwtSrcPath = 'src/gwt'
 gwtClassesDir = new File(grailsSettings.projectWorkDir, 'gwtclasses')
 gwtJavaCmd = getPropertyValue('gwt.java.cmd', null)
 gwtJavacCmd = getPropertyValue('gwt.javac.cmd', null)
-gwtOutputPath = getPropertyValue('gwt.output.path', "$basedir/web-app/js/gwt")
+gwtOutputPath = getPropertyValue('gwt.output.path', isAssetPipelinePluginInstalled ?
+        "$basedir/grails-app/assets/javascripts/gwt" : "$basedir/web-app/js/gwt")
 gwtOutputStyle = getPropertyValue('gwt.output.style', 'OBF')
 gwtDisableCompile = getPropertyValue('gwt.compile.disable', 'false').toBoolean()
 gwtLibPath = "$basedir/lib/gwt"
@@ -85,14 +96,14 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
         gwtDraftCompile = null
 
     if (gwtDraftCompile == null)
-        gwtDraftCompile = getPropertyValue('gwt.compile.draft', false).toBoolean()
+        gwtDraftCompile = getPropertyValue('gwt.compile.draft', 'false').toBoolean()
 
-    def compileReport = getPropertyValue('gwt.compile.report', false).toBoolean()
+    def compileReport = getPropertyValue('gwt.compile.report', 'false').toBoolean()
     def compileOptimize = getPropertyValue('gwt.compile.optimizationLevel', null)?.toInteger()
     def logLevel = getPropertyValue('gwt.compile.logLevel', null)
-    def classMetadata = getPropertyValue('gwt.compile.classMetadata', true).toBoolean()
-    def castChecking = getPropertyValue('gwt.compile.castChecking', true).toBoolean()
-    def aggressiveOptimization = getPropertyValue('gwt.compile.aggressiveOptimization', true).toBoolean()
+    def classMetadata = getPropertyValue('gwt.compile.classMetadata', 'true').toBoolean()
+    def castChecking = getPropertyValue('gwt.compile.castChecking', 'true').toBoolean()
+    def aggressiveOptimization = getPropertyValue('gwt.compile.aggressiveOptimization', 'true').toBoolean()
     def jsInteropMode = getPropertyValue('gwt.compile.jsInteropMode', null)
 
     // This triggers the Events scripts in the application and plugins.
@@ -294,9 +305,8 @@ target(runCodeServer: 'Runs the Super Dev Mode server.') {
 addGwtDependencies = {
     println 'Adding GWT dependencies ...'
 
-    if (getPropertyValue('gwt.version', null)) {
+    if (getPropertyValue('gwt.version', null))
         addGwtCoreToDependencies(getPropertyValue('gwt.version', null))
-    }
     if (buildConfig.gwt.gin.version)
         addGinToDependencies(buildConfig.gwt.gin.version)
     if (buildConfig.gwt.gwtp.version)
