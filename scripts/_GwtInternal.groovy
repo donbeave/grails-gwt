@@ -89,7 +89,7 @@ target(compileGwtModules: "Compiles any GWT modules in '$gwtSrcPath'.") {
 
     def compileReport = getPropertyValue('gwt.compile.report', false).toBoolean()
     def compileOptimize = getPropertyValue('gwt.compile.optimizationLevel', null)?.toInteger()
-    def logLevel = getPropertyValue('gwt.compile.logLevel', null)?.toInteger()
+    def logLevel = getPropertyValue('gwt.compile.logLevel', null)
     def classMetadata = getPropertyValue('gwt.compile.classMetadata', true).toBoolean()
     def castChecking = getPropertyValue('gwt.compile.castChecking', true).toBoolean()
     def aggressiveOptimization = getPropertyValue('gwt.compile.aggressiveOptimization', true).toBoolean()
