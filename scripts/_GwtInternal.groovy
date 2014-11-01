@@ -15,8 +15,12 @@
  */
 import grails.util.BuildSettings
 import grails.util.GrailsNameUtils
+import org.apache.ivy.core.module.id.ModuleRevisionId
+import org.apache.ivy.core.resolve.DownloadOptions
+import org.apache.ivy.core.resolve.ResolveOptions
 import org.codehaus.groovy.grails.plugins.GrailsPluginInfo
 import org.codehaus.groovy.grails.resolve.Dependency
+import org.codehaus.groovy.grails.resolve.IvyDependencyManager
 
 // No point doing this stuff more than once.
 if (getBinding().variables.containsKey('_gwt_internal_called')) return
@@ -335,9 +339,11 @@ addGwtDependencies = {
 }
 
 resolveGwtDependencies = {
-    println 'Resolving GWT dependencies ...'
+    if (!(grailsSettings.dependencyManager instanceof IvyDependencyManager)) {
+        println 'Resolving GWT dependencies ...'
 
-    resolveMavenDependencies()
+        resolveMavenDependencies()
+    }
 }
 
 compileGwtClasses = {
@@ -561,19 +567,46 @@ def addGuavaToDependencies(String version) {
 }
 
 def addDependency(String group, String name, String version, String wildcard = null, boolean exported = false) {
-    //Create a dependency with the supplied information
+    // Create a dependency with the supplied information
     final dependency = new Dependency(group, name, version)
     dependency.exported = exported
     if (wildcard)
         dependency.exclude(wildcard)
 
-    if (exported) {
-        addMavenDependency(dependency, BuildSettings.COMPILE_SCOPE)
-        addMavenDependency(dependency, BuildSettings.RUNTIME_SCOPE)
-    } else {
-        addMavenDependency(dependency, BuildSettings.PROVIDED_SCOPE)
-    }
     gwtDependencies << dependency
+
+    if (grailsSettings.dependencyManager instanceof IvyDependencyManager) {
+        def mrid = ModuleRevisionId.newInstance(group, name, version, [:])
+
+        def options = new ResolveOptions(
+                confs: ['default'] as String[],
+                transitive: false,
+                outputReport: true,
+                download: true,
+                useCacheOnly: false
+        )
+        def report = grailsSettings.dependencyManager.resolveEngine.resolve(mrid, options, false)
+
+        if (report.hasError()) {
+            println "GWT Dependency resolution has errors, exiting"
+            exit(1)
+        }
+
+        report.artifacts.each { artifact ->
+            def rep = grailsSettings.dependencyManager.resolveEngine.download(artifact,
+                    new DownloadOptions(log: DownloadOptions.LOG_DOWNLOAD_ONLY))
+            def dependencyJar = rep.localFile
+
+            addResolvedJar(dependencyJar, exported)
+        }
+    } else {
+        if (exported) {
+            addMavenDependency(dependency, BuildSettings.COMPILE_SCOPE)
+            addMavenDependency(dependency, BuildSettings.RUNTIME_SCOPE)
+        } else {
+            addMavenDependency(dependency, BuildSettings.PROVIDED_SCOPE)
+        }
+    }
 }
 
 def addMavenDependency(Dependency dependency, String scope) {
@@ -581,10 +614,19 @@ def addMavenDependency(Dependency dependency, String scope) {
 }
 
 def resolveMavenDependencies() {
-    def artifacts = grailsSettings.dependencyManager.resolve(BuildSettings.PROVIDED_SCOPE).resolvedArtifacts
-    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.COMPILE_SCOPE).resolvedArtifacts)
-    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.RUNTIME_SCOPE).resolvedArtifacts)
-    artifacts.addAll(grailsSettings.dependencyManager.resolve(BuildSettings.BUILD_SCOPE).resolvedArtifacts)
+    def artifacts = []
+
+    [BuildSettings.PROVIDED_SCOPE, BuildSettings.COMPILE_SCOPE,
+     BuildSettings.RUNTIME_SCOPE, BuildSettings.BUILD_SCOPE].each {
+        def dependencyReport = grailsSettings.dependencyManager.resolve(it)
+        if (dependencyReport.hasError()) {
+            println "GWT Dependency resolution has errors (${dependencyReport.getResolveError().getMessage()}), exiting"
+            exit(1)
+        }
+
+        artifacts.addAll(dependencyReport.resolvedArtifacts)
+    }
+
     artifacts = artifacts.unique()
 
     gwtDependencies.each { dependency ->
@@ -594,21 +636,28 @@ def resolveMavenDependencies() {
 
         def dependencyJar = artifact?.file
 
-        if (dependencyJar) {
-            // add artifacts to the list of Grails provided dependencies
-            // this enables SpringSource STS to build Eclipse's classpath properly
-            if (dependency.exported) {
-                grailsSettings.compileDependencies << dependencyJar
-                grailsSettings.runtimeDependencies << dependencyJar
-            } else {
-                grailsSettings.providedDependencies << dependencyJar
-            }
-            grailsSettings.testDependencies << dependencyJar
-
-            if (!gwtResolvedDependencies.contains(dependencyJar))
-                gwtResolvedDependencies << dependencyJar
+        if (!dependencyJar) {
+            println "Jar not found (${artifact}), exiting"
+            exit(1)
         }
+
+        addResolvedJar(dependencyJar, dependency.exported)
     }
+}
+
+def addResolvedJar(def dependencyJar, boolean exported) {
+    // add artifacts to the list of Grails provided dependencies
+    // this enables SpringSource STS to build Eclipse's classpath properly
+    if (exported) {
+        grailsSettings.compileDependencies << dependencyJar
+        grailsSettings.runtimeDependencies << dependencyJar
+    } else {
+        grailsSettings.providedDependencies << dependencyJar
+    }
+    grailsSettings.testDependencies << dependencyJar
+
+    if (!gwtResolvedDependencies.contains(dependencyJar))
+        gwtResolvedDependencies << dependencyJar
 }
 
 def maybeUseGwtLibDir() {
