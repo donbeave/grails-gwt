@@ -30,6 +30,7 @@ class GWTCompiler {
     boolean draft = false
     def baseDir
     def logDir
+    def deployDir
     def extraDir
 
     def gwtOutputStyle = 'PRETTY'
@@ -260,6 +261,9 @@ class GWTCompiler {
 
                 arg(value: '-war')
                 arg(value: gwtOutputPath)
+
+                arg(value: '-deploy')
+                arg(value: deployDir)
 
                 arg(value: '-extra')
                 arg(value: extraDir)
