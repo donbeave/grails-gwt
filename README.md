@@ -26,8 +26,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>GWT version used in application.</td>
 	</tr>
 </table>
 
@@ -46,8 +45,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of Google GIN (GWT INjection). Guice dependency injection to GWT client-side code.</td>
 	</tr>
 </table>
 
@@ -66,8 +64,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of GWTP (gwt-platform). A complete model-view-presenter framework.</td>
 	</tr>
 </table>
 
@@ -86,8 +83,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of Guava. Google Core Libraries for GWT.</td>
 	</tr>
 </table>
 
@@ -106,8 +102,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of EventBinder. Making GWT EventBus easy.</td>
 	</tr>
 </table>
 
@@ -126,8 +121,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>A list of dependencies to import as GWT module dependencies. Uses the same format as in <code>BuildConfig.groovy</code>.</td>
 	</tr>
 </table>
 
@@ -259,7 +253,7 @@ The following configuration options are available (e.g. by adding some or all of
 	<tr>
 		<td>Default</td>
 		<td><code>true</code></td>
-	</tr>j
+	</tr>
 	<tr>
 		<td>Description</td>
 		<td><strong>EXPERIMENTAL</strong>: Disables run-time checking of cast operations.</td>
