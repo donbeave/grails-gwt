@@ -167,7 +167,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>Enable faster, but less-optimized, compilations. This is equivalent to `gwt.compile.optimizationLevel=0` plus `gwt.compile.aggressiveOptimization=false`.</td>
+		<td>Enable faster, but less-optimized, compilations. This is equivalent to <code>gwt.compile.optimizationLevel=0</code> plus <code>gwt.compile.aggressiveOptimization=false</code>.</td>
 	</tr>
 </table>
 
@@ -205,7 +205,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>Sets the optimization level used by the compiler. `0`=none `9`=maximum. `-1` uses the default level of the compiler.</td>
+		<td>Sets the optimization level used by the compiler. <code>0</code>=none <code>9</code>=maximum. <code>-1</code> uses the default level of the compiler.</td>
 	</tr>
 </table>
 
@@ -224,7 +224,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>GWT logging level, either `ERROR`, `WARN`, `INFO`, `TRACE`, `DEBUG`, `SPAM`, or `ALL`.</td>
+		<td>GWT logging level, either <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>TRACE</code>, <code>DEBUG</code>, <code>SPAM</code>, or <code>ALL</code>.</td>
 	</tr>
 </table>
 
@@ -243,7 +243,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>EXPERIMENTAL: Disables some java.lang.Class methods (e.g. getName()).</td>
+		<td><strong>EXPERIMENTAL</strong>: Disables some java.lang.Class methods (e.g. getName()).</td>
 	</tr>
 </table>
 
@@ -262,7 +262,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>j
 	<tr>
 		<td>Description</td>
-		<td>EXPERIMENTAL: Disables run-time checking of cast operations.</td>
+		<td><strong>EXPERIMENTAL</strong>: Disables run-time checking of cast operations.</td>
 	</tr>
 </table>
 
@@ -281,7 +281,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>**Deprecated**. since 2.6.0-rc1</td>
+		<td><strong>Deprecated</strong>. since 2.6.0-rc1</td>
 	</tr>
 </table>
 
@@ -300,6 +300,6 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>EXPERIMENTAL: Specifies JsInterop mode, either `NONE`, `JS`, or `CLOSURE`.</td>
+		<td><strong>EXPERIMENTAL</strong>: Specifies JsInterop mode, either <code>NONE</code>, <code>JS</code>, or <code>CLOSURE</code>.</td>
 	</tr>
 </table>
