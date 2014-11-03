@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import grails.converters.XML
 import grails.util.GrailsNameUtils as GCU
 import org.codehaus.groovy.grails.plugins.GrailsPluginInfo
 
 includeTargets << grailsScript('_GrailsArgParsing')
 includeTargets << grailsScript('_GrailsCreateArtifacts')
+includeTargets << grailsScript('_GrailsCompile')
+includeTargets << new File("${gwtPluginDir}/scripts/_GwtCreate.groovy")
 
 target(default: 'Creates a new GSP page for hosting a GWT UI.') {
-    depends(parseArguments)
+    depends(compile, parseArguments)
 
     // This script takes multiple arguments (in fact, at least two),
     // so split the given string into separate parameters, using
     // whitespace as the delimiter.
     def argArray = argsMap['params']
 
-    if (argArray.size() < 2) {
+    if (argArray.size() < 1) {
         println 'At least two arguments must be given to this script.'
         println()
-        println 'USAGE: create-gwt-page GSPFILE MODULE'
+        println 'USAGE: create-gwt-page GSPFILE [MODULE]'
         exit(1)
     }
 
@@ -69,10 +71,48 @@ target(default: 'Creates a new GSP page for hosting a GWT UI.') {
         targetFile = "web-app/${argArray[0]}"
     }
 
+    def GWTCompiler = classLoader.loadClass('grails.plugin.gwt.GWTCompiler')
+
+    String module = argArray.size() > 1 ? argArray[1] : null
+
+    if (!module) {
+        def modules = GWTCompiler.findModules("${basedir}/${gwtSrcPath}", true)
+
+        if (!modules) {
+            println 'Does not find any GWT module.'
+            exit(1)
+        }
+
+        modules.eachWithIndex { def entry, int i ->
+            println "${i + 1}) ${entry}"
+        }
+
+        ant.input(addProperty: 'moduleIndex',
+                message: 'Please select one module from list by input position number or full name\n')
+
+        try {
+            if (moduleIndex.toInteger())
+                module = modules.get(moduleIndex.toInteger() - 1)
+        } catch (NumberFormatException e) {
+            module = moduleIndex
+        }
+    }
+
+    try {
+        def override =
+                XML.parse(new FileInputStream("$basedir/$gwtSrcPath/${packageToPath(module)}.gwt.xml"), 'UTF-8').@'rename-to'
+
+        if (override && !override.equals(''))
+            module = override
+    } catch (FileNotFoundException e) {
+        println e.message
+        exit(1)
+    }
+
     // Copy the template file to the target location.
     ant.copy(file: templateFile, tofile: targetFile, overwrite: true)
 
-    String nocacheFile = "gwt/${argArray[1]}/${argArray[1]}.nocache.js"
+    String nocacheFile = "gwt/${module}/${module}.nocache.js"
     String injector = '<script type="text/javascript"\n' +
             '            src="${resource(dir: \'js/' + nocacheFile + '\')}?${new Date().time}\"></script>\n'
 
@@ -80,7 +120,7 @@ target(default: 'Creates a new GSP page for hosting a GWT UI.') {
     for (GrailsPluginInfo info in pluginSettings.getPluginInfos()) {
         if (info.name.equals('asset-pipeline')) {
             injector = '<g:if test="${!grails.util.Environment.isDevelopmentMode()}">\n' +
-                    '        <meta name="gwt:property"\n              content="baseUrl=//${grails.util.Holders.grailsApplication.mainContext.getBean(\'grailsLinkGenerator\').serverBaseURL}/gwt/' + argArray[1] + '/"/>\n' +
+                    '        <meta name="gwt:property"\n              content="baseUrl=//${grails.util.Holders.grailsApplication.mainContext.getBean(\'grailsLinkGenerator\').serverBaseURL}/gwt/' + module + '/"/>\n' +
                     '    </g:if>\n' +
                     "    <asset:script src=\"${nocacheFile}\"/>"
         }
