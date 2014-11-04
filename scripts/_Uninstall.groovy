@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/**
+ * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 // Remove the directory for storing GWT files.
 ant.delete(dir: "$basedir/web-app/js/gwt")
 ant.delete(dir: "$basedir/grails-app/assets/javascripts/gwt")

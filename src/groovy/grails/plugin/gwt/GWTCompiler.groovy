@@ -20,8 +20,11 @@ import java.util.concurrent.Executors
 
 /**
  * Manage GWT Compilation.
- *
  * Remove from scripting environment to give more opportunity to use threading when this is appropriate
+ *
+ * @author Predrag Knežević
+ * @author <a href='mailto:david.dawson@dawsonsystems.com'>David Dawson</a>
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
  */
 class GWTCompiler {
     List modules

@@ -16,6 +16,10 @@
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 includeTargets << grailsScript('_GrailsCompile')
 
+/**
+ * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 target(default: 'Cleans the compiled GWT module files.') {
     depends(compile)
 

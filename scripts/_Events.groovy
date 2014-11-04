@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
+ * @author Predrag Knežević
+ * @author Milan Skuhra
+ * @author <a href='mailto:david.dawson@dawsonsystems.com'>David Dawson</a>
+ * @author John Rellis
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 try {
     includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')
 } catch (e) {

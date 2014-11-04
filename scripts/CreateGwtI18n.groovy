@@ -17,6 +17,9 @@ includeTargets << grailsScript('_GrailsArgParsing')
 includeTargets << grailsScript('_GrailsCreateArtifacts')
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtCreate.groovy")
 
+/**
+ * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
+ */
 USAGE = """
     create-gwt-i18n [--constants-only] [--messages-only] MODULEPKG.MODULENAME
 

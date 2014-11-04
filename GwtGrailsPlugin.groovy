@@ -25,7 +25,7 @@ class GwtGrailsPlugin {
     def grailsVersion = '2.3 > *'
 
     def title = 'The Google Web Toolkit for Grails.'
-    def author = 'David Dawson, Peter Ledbrook, Alexey Zhokhov'
+    def author = 'David Dawson, Peter Ledbrook, Predrag Knežević, Alexey Zhokhov'
     def authorEmail = 'donbeave@gmail.com'
     def description = """\
 Incorporates GWT into Grails. In particular, GWT host pages can be

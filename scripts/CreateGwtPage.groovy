@@ -22,6 +22,10 @@ includeTargets << grailsScript('_GrailsCreateArtifacts')
 includeTargets << grailsScript('_GrailsCompile')
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtCreate.groovy")
 
+/**
+ * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
+ * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ */
 target(default: 'Creates a new GSP page for hosting a GWT UI.') {
     depends(compile, parseArguments)
 
