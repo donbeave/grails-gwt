@@ -26,8 +26,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>GWT version used in application.</td>
 	</tr>
 </table>
 
@@ -46,8 +45,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of Google GIN (GWT INjection). Guice dependency injection to GWT client-side code.</td>
 	</tr>
 </table>
 
@@ -66,8 +64,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of GWTP (gwt-platform). A complete model-view-presenter framework.</td>
 	</tr>
 </table>
 
@@ -86,8 +83,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of Guava. Google Core Libraries for GWT.</td>
 	</tr>
 </table>
 
@@ -106,8 +102,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Version of EventBinder. Making GWT EventBus easy.</td>
 	</tr>
 </table>
 
@@ -126,8 +121,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>A list of dependencies to import as GWT module dependencies. Uses the same format as in <code>BuildConfig.groovy</code>.</td>
 	</tr>
 </table>
 
@@ -148,8 +142,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Number of parallel processes used to compile GWT premutations. Defaults to platform available processors number.</td>
 	</tr>
 </table>
 
@@ -168,8 +161,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Enable faster, but less-optimized, compilations. This is equivalent to <code>gwt.compile.optimizationLevel=0</code> plus <code>gwt.compile.aggressiveOptimization=false</code>.</td>
 	</tr>
 </table>
 
@@ -188,8 +180,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Compile a report that tells the "Story of Your Compile".</td>
 	</tr>
 </table>
 
@@ -208,8 +199,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>Sets the optimization level used by the compiler. <code>0</code>=none <code>9</code>=maximum. <code>-1</code> uses the default level of the compiler.</td>
 	</tr>
 </table>
 
@@ -228,8 +218,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td>GWT logging level, either <code>ERROR</code>, <code>WARN</code>, <code>INFO</code>, <code>TRACE</code>, <code>DEBUG</code>, <code>SPAM</code>, or <code>ALL</code>.</td>
 	</tr>
 </table>
 
@@ -248,8 +237,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td><strong>EXPERIMENTAL</strong>: Disables some java.lang.Class methods (e.g. getName()).</td>
 	</tr>
 </table>
 
@@ -268,8 +256,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td><strong>EXPERIMENTAL</strong>: Disables run-time checking of cast operations.</td>
 	</tr>
 </table>
 
@@ -288,8 +275,7 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td><strong>Deprecated</strong>. since 2.6.0-rc1</td>
 	</tr>
 </table>
 
@@ -308,7 +294,6 @@ The following configuration options are available (e.g. by adding some or all of
 	</tr>
 	<tr>
 		<td>Description</td>
-		<td>
-		</td>
+		<td><strong>EXPERIMENTAL</strong>: Specifies JsInterop mode, either <code>NONE</code>, <code>JS</code>, or <code>CLOSURE</code>.</td>
 	</tr>
 </table>
