@@ -360,6 +360,11 @@ target(runCodeServer: 'Runs the Super Dev Mode server.') {
     }
 
     gwtRunWithProps(codeServerClass, [spawn: false, fork: true]) {
+        if (grailsSettings.config.gwt.codeserver.args) {
+            def c = grailsSettings.config.gwt.codeserver.args.clone()
+            c.delegate = delegate
+            c()
+        }
         if (argsMap['bindAddress']) {
             arg(value: '-bindAddress')
             arg(value: argsMap['bindAddress'])
