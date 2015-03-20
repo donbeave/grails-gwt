@@ -591,6 +591,11 @@ def addGwtCoreToDependencies(String version) {
     // GWT version >= 2.7.0
     if (versionComponents[0] > 2 || (versionComponents[0] == 2 && versionComponents[1] >= 7)) {
         addDependency('org.ow2.asm', 'asm', '5.0.3', Dependency.WILDCARD)
+        addDependency('org.ow2.asm', 'asm-util', '5.0.3', Dependency.WILDCARD)
+        addDependency('org.ow2.asm', 'asm-commons', '5.0.3', Dependency.WILDCARD)
+        addDependency('org.ow2.asm', 'asm-tree', '5.0.3', Dependency.WILDCARD)
+        addDependency('org.ow2.asm', 'asm-analysis', '5.0.3', Dependency.WILDCARD)
+        addDependency('org.ow2.asm', 'asm-xml', '5.0.3', Dependency.WILDCARD)
     }
 }
 
