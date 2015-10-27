@@ -17,7 +17,7 @@
 /**
  * @author <a href='mailto:david.dawson@simplicityitself.com'>David Dawson</a>
  * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 class GwtGrailsPlugin {
 
@@ -26,7 +26,7 @@ class GwtGrailsPlugin {
 
     def title = 'The Google Web Toolkit for Grails.'
     def author = 'David Dawson, Peter Ledbrook, Predrag Knežević, Alexey Zhokhov'
-    def authorEmail = 'donbeave@gmail.com'
+    def authorEmail = 'alexey@zhokhov.com'
     def description = """\
 Incorporates GWT into Grails. In particular, GWT host pages can be
 GSPs and standard Grails services can be used to handle client RPC
@@ -40,7 +40,7 @@ requests.
     def developers = [
             [name: 'David Dawson', email: 'david.dawson@simplicityitself.com'],
             [name: 'Peter Ledbrook', email: 'p.ledbrook@cacoethes.co.uk'],
-            [name: 'Alexey Zhokhov', email: 'donbeave@gmail.com']
+            [name: 'Alexey Zhokhov', email: 'alexey@zhokhov.com']
     ]
 
     def srcDir = 'src/gwt'

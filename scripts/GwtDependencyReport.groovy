@@ -17,7 +17,7 @@ includeTargets << grailsScript('DependencyReport')
 includeTargets << new File("${gwtPluginDir}/scripts/_GwtInternal.groovy")
 
 /**
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 target(gwtDependencyReport: 'Produces a dependency report include GWT dependencies') {
     dependencyReport()

@@ -20,7 +20,7 @@
  * @author Milan Skuhra
  * @author <a href='mailto:david.dawson@dawsonsystems.com'>David Dawson</a>
  * @author John Rellis
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 try {
     includeTargets << new File(gwtPluginDir, 'scripts/_GwtInternal.groovy')

@@ -24,7 +24,7 @@ import java.util.concurrent.Executors
  *
  * @author Predrag Knežević
  * @author <a href='mailto:david.dawson@dawsonsystems.com'>David Dawson</a>
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 class GWTCompiler {
     List modules

@@ -18,7 +18,7 @@ includeTargets << grailsScript('_GrailsCompile')
 
 /**
  * @author <a href='mailto:p.ledbrook@cacoethes.co.uk'>Peter Ledbrook</a>
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 target(default: 'Generates the appropriate Java interfaces for all GWT I18n property files.') {
     depends(compile)

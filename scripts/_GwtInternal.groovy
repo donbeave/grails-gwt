@@ -28,7 +28,7 @@ import org.codehaus.groovy.grails.resolve.IvyDependencyManager
  * @author Milan Skuhra
  * @author <a href='mailto:david.dawson@dawsonsystems.com'>David Dawson</a>
  * @author John Rellis
- * @author <a href='mailto:donbeave@gmail.com'>Alexey Zhokhov</a>
+ * @author <a href='mailto:alexey@zhokhov.com'>Alexey Zhokhov</a>
  */
 // No point doing this stuff more than once.
 if (getBinding().variables.containsKey('_gwt_internal_called')) return
