@@ -8,11 +8,11 @@ grails.project.dependency.resolution = {
         mavenCentral()
     }
     dependencies {
-        build 'com.google.gwt:gwt-user:2.5.0'
-        build 'com.google.gwt:gwt-servlet:2.5.0'
+        build 'com.google.gwt:gwt-user:2.5.1'
+        build 'com.google.gwt:gwt-servlet:2.5.1'
     }
     plugins {
-        build(':release:3.0.1', ':rest-client-builder:2.0.1') {
+        build(':release:3.1.1', ':rest-client-builder:2.1.1') {
             export = false
         }
     }
