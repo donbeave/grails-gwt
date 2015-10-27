@@ -69,7 +69,8 @@ gwtClassesDir = new File(grailsSettings.projectWorkDir, 'gwtclasses')
 gwtDeployDir = new File("${basedir}/web-app/WEB-INF/deploy")
 gwtJavaCmd = getPropertyValue('gwt.java.cmd', null)
 gwtJavacCmd = getPropertyValue('gwt.javac.cmd', null)
-gwtOutputPath = getPropertyValue('gwt.output.path', isAssetPipelinePluginInstalled ?
+gwtOutputPath = getPropertyValue('gwt.output.path', isAssetPipelinePluginInstalled &&
+        getPropertyValue('gwt.compile.assetsDir', 'false').toBoolean() ?
         "$basedir/grails-app/assets/javascripts/gwt" : "$basedir/web-app/js/gwt")
 gwtOutputStyle = getPropertyValue('gwt.output.style', 'OBF')
 gwtDisableCompile = getPropertyValue('gwt.compile.disable', 'false').toBoolean()
