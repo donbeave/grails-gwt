@@ -1,5 +1,7 @@
 # Grails GWT Plugin 
+
 [![Build Status](https://travis-ci.org/donbeave/grails-gwt.svg?branch=master)](https://travis-ci.org/donbeave/grails-gwt)
+[![Analytics](https://ga-beacon.appspot.com/UA-71075299-1/grails-gwt/main-page)](https://github.com/igrigorik/ga-beacon)
 
 ## Introduction
 
